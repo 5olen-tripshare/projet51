@@ -25,7 +25,7 @@ export function AccommodationCard(props: {
   const accommodation = props.accommodation;
 
   return (
-    <Link href={`/accommodation/${accommodation.id}`}>
+    <Link href={`/accommodations/${accommodation.id}`}>
       <div className="bg-brown border-collapse border border-neutral-950 rounded-lg shadow-xl overflow-hidden transition-transform hover:scale-105 cursor-pointer w-full h-96">
         <div className="relative h-48 w-full">
           <Image

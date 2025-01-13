@@ -1,0 +1,319 @@
+{
+  "accommodations": [
+    {
+      "id": "1",
+      "name": "Villa Côte d'Azur",
+      "location": "Nice, France",
+      "price": 400,
+      "description": "Spacieuse villa avec piscine privée, terrasse et vue imprenable sur la mer Méditerranée.",
+      "image": [
+        "https://cf.bstatic.com/xdata/images/hotel/max1024x768/437582157.jpg?k=af0d3f936d81804499134f0c06d372be35d032473ef3738ad2e4917064ac7d35&o=&hp=1"
+      ],
+      "reviews": {
+        "rating": 4.9,
+        "count": 210
+      },
+      "topCriteria": ["piscine", "vue_mer", "terrasse"],
+      "interests": ["plage", "randonnée", "gastronomie"],
+      "isAvailable": true,
+      "totalPlaces": 10,
+      "numberRoom": 5,
+      "squareMeter": 120,
+      "bedRoom": 3
+    },
+    {
+      "id": "2",
+      "name": "Chalet Alpin Luxe",
+      "location": "Chamonix, France",
+      "price": 320,
+      "description": "Superbe chalet alpin avec accès direct aux pistes",
+      "image": [
+        "https://carte-blanche.com/app/uploads/2021/07/Chalet-Thovex-Val-dIsere-Exterieur-06-1536x1026.jpg"
+      ],
+      "reviews": {
+        "rating": 4.7,
+        "count": 89
+      },
+      "topCriteria": ["proche_pistes", "cheminée", "spa"],
+      "interests": ["ski", "randonnée", "nature"],
+      "isAvailable": false,
+      "totalPlaces": 6,
+      "numberRoom": 3,
+      "squareMeter": 85,
+      "bedRoom": 3
+    },
+    {
+      "id": "3",
+      "name": "Appartement Moderne",
+      "location": "Paris, France",
+      "price": 180,
+      "description": "Appartement moderne situé au cœur de Paris avec vue sur la Tour Eiffel",
+      "image": [
+        "https://resize-elle.ladmedia.fr/rcrop/638,,forcex/img/var/plain_site/storage/images/deco/reportages/city-guide/location-appartement-paris/83572457-1-fre-FR/Airbnb-Paris-15-lofts-appartements-et-maisons-de-reve-a-Paris.jpg"
+      ],
+      "reviews": {
+        "rating": 4.6,
+        "count": 210
+      },
+      "topCriteria": ["centre-ville", "wifi", "vue_tour_eiffel"],
+      "interests": ["culture", "shopping", "gastronomie"],
+      "isAvailable": true,
+      "totalPlaces": 4,
+      "numberRoom": 2,
+      "squareMeter": 50,
+      "bedRoom": 1
+    },
+    {
+      "id": "4",
+      "name": "Maison Provençale",
+      "location": "Aix-en-Provence, France",
+      "price": 270,
+      "description": "Charmante maison provençale avec jardin et piscine privée",
+      "image": [
+        "https://www.groupemasprovence.com/_objects/tao_medias/image/maison-provencale-1584.jpg"
+      ],
+      "reviews": {
+        "rating": 4.9,
+        "count": 150
+      },
+      "topCriteria": ["piscine", "jardin", "calme"],
+      "interests": ["nature", "culture", "gastronomie"],
+      "isAvailable": true,
+      "totalPlaces": 8,
+      "numberRoom": 4,
+      "squareMeter": 90,
+      "bedRoom": 3
+    },
+    {
+      "id": "5",
+      "name": "Loft Industriel",
+      "location": "Lyon, France",
+      "price": 200,
+      "description": "Loft au style industriel avec grande terrasse en plein centre",
+      "image": [
+        "https://www.notreloft.com/images/2014/08/loft-industriel-cuisine-verriere-3D-800x1067.jpg"
+      ],
+      "reviews": {
+        "rating": 4.5,
+        "count": 75
+      },
+      "topCriteria": ["terrasse", "centre-ville", "wifi"],
+      "interests": ["gastronomie", "shopping", "culture"],
+      "isAvailable": false,
+      "totalPlaces": 5,
+      "numberRoom": 2,
+      "squareMeter": 60,
+      "bedRoom": 1
+    },
+    {
+      "id": "6",
+      "name": "Villa Tropicale",
+      "location": "Guadeloupe, France",
+      "price": 280,
+      "description": "Villa avec piscine et jardin tropical, proche de la plage",
+      "image": [
+        "https://www.villa-prestige-antilles.com/wp-content/uploads/2022/05/20220325_141148.jpg"
+      ],
+      "reviews": {
+        "rating": 4.8,
+        "count": 100
+      },
+      "topCriteria": ["piscine", "proche_plage", "wifi"],
+      "interests": ["plage", "sports_nautiques", "nature"],
+      "isAvailable": true,
+      "totalPlaces": 6,
+      "numberRoom": 3,
+      "squareMeter": 100,
+      "bedRoom": 2
+    },
+    {
+      "id": "7",
+      "name": "Cabane en Forêt",
+      "location": "Dordogne, France",
+      "price": 150,
+      "description": "Cabane rustique nichée au cœur de la forêt",
+      "image": [
+        "https://cdn.prod.website-files.com/5fc7e5dc49687cd54d74d0c3/6720e1eca840d45bb1303af2_631eff73fddd92ed2c588556_Projet-Z-Lodges.jpeg"
+      ],
+      "reviews": {
+        "rating": 4.3,
+        "count": 65
+      },
+      "topCriteria": ["nature", "calme", "authenticité"],
+      "interests": ["randonnée", "détente", "aventure"],
+      "isAvailable": true,
+      "totalPlaces": 4,
+      "numberRoom": 2,
+      "squareMeter": 40,
+      "bedRoom": 1
+    },
+    {
+      "id": "8",
+      "name": "Riad Marocain",
+      "location": "Marrakech, Maroc",
+      "price": 300,
+      "description": "Riad traditionnel avec patio et piscine intérieure",
+      "image": [
+        "https://blog.halalbooking.com/content/images/2021/06/shutterstock_1520495066-1.jpg"
+      ],
+      "reviews": {
+        "rating": 4.9,
+        "count": 110
+      },
+      "topCriteria": ["tradition", "piscine", "patio"],
+      "interests": ["culture", "gastronomie", "artisanat"],
+      "isAvailable": false,
+      "totalPlaces": 10,
+      "numberRoom": 5,
+      "squareMeter": 120,
+      "bedRoom": 4
+    },
+    {
+      "id": "9",
+      "name": "Appartement Design",
+      "location": "Berlin, Allemagne",
+      "price": 190,
+      "description": "Appartement au design contemporain dans le quartier branché de Kreuzberg",
+      "image": [
+        "https://www.myboutiquehotel.com/photos/113440/numa-l-sketch-rooms-apartments-berlin-004-82548-728x400.jpg"
+      ],
+      "reviews": {
+        "rating": 4.4,
+        "count": 80
+      },
+      "topCriteria": ["design", "proche_transports", "wifi"],
+      "interests": ["culture", "nuit", "shopping"],
+      "isAvailable": true,
+      "totalPlaces": 4,
+      "numberRoom": 2,
+      "squareMeter": 55,
+      "bedRoom": 1
+    },
+    {
+      "id": "10",
+      "name": "Maison de Campagne",
+      "location": "Bordeaux, France",
+      "price": 220,
+      "description": "Maison de campagne rustique avec grand jardin et terrasse",
+      "image": [
+        "https://www.renovationettravaux.fr/wp-content/uploads/2023/02/maison-campagne.jpg"
+      ],
+      "reviews": {
+        "rating": 4.7,
+        "count": 94
+      },
+      "topCriteria": ["calme", "jardin", "barbecue"],
+      "interests": ["nature", "vin", "gastronomie"],
+      "isAvailable": true,
+      "totalPlaces": 7,
+      "numberRoom": 4,
+      "squareMeter": 85,
+      "bedRoom": 3
+    },
+    {
+      "id": "11",
+      "name": "Studio Cosy",
+      "location": "Montpellier, France",
+      "price": 120,
+      "description": "Studio moderne et cosy situé en plein centre-ville",
+      "image": [
+        "https://cf.bstatic.com/xdata/images/hotel/max1024x768/475918379.jpg?k=b6536ea39473230d9bea9313e2c052ca9ab640f6f9c44290648397c8459b5e93&o=&hp=1"
+      ],
+      "reviews": {
+        "rating": 4.2,
+        "count": 47
+      },
+      "topCriteria": ["proche_transports", "centre-ville", "wifi"],
+      "interests": ["culture", "plage", "shopping"],
+      "isAvailable": false,
+      "totalPlaces": 2,
+      "numberRoom": 1,
+      "squareMeter": 30,
+      "bedRoom": 1
+    },
+    {
+      "id": "12",
+      "name": "Penthouse Luxe",
+      "location": "Monaco",
+      "price": 600,
+      "description": "Penthouse de luxe avec vue panoramique sur la mer",
+      "image": [
+        "https://blog.lacosta-properties-monaco.com/wp-content/uploads/2018/08/Penthouse-Monaco-Villa-On-Top.jpg"
+      ],
+      "reviews": {
+        "rating": 5.0,
+        "count": 55
+      },
+      "topCriteria": ["vue_mer", "terrasse", "jacuzzi"],
+      "interests": ["luxe", "casino", "plage"],
+      "isAvailable": true,
+      "totalPlaces": 8,
+      "numberRoom": 5,
+      "squareMeter": 150,
+      "bedRoom": 4
+    },
+    {
+      "id": "13",
+      "name": "Tiny House Écologique",
+      "location": "Annecy, France",
+      "price": 140,
+      "description": "Tiny house écologique au bord du lac",
+      "image": [
+        "https://phrmeseng.rosselcdn.net/sites/default/files/dpistyles_v2/mes_scale_664w/2020/10/07/node_15585/73839/public/2020/10/07/B9724848292Z.1_20201007151414_000%2BGCUGQS774.1-0.jpg?itok=Wx3EA2do1602076472"
+      ],
+      "reviews": {
+        "rating": 4.5,
+        "count": 67
+      },
+      "topCriteria": ["nature", "vue_lac", "éco-responsable"],
+      "interests": ["randonnée", "sports_nautiques", "détente"],
+      "isAvailable": true,
+      "totalPlaces": 4,
+      "numberRoom": 2,
+      "squareMeter": 35,
+      "bedRoom": 1
+    },
+    {
+      "id": "14",
+      "name": "Gîte Familial",
+      "location": "Normandie, France",
+      "price": 180,
+      "description": "Gîte spacieux idéal pour les familles, proche des plages du Débarquement",
+      "image": [
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7siu_Njj0hGFnjHaP-0fNilgVzHeTAczrI4nF-UMDwf-fiibxBnppejKafHwgY8171DM&usqp=CAU"
+      ],
+      "reviews": {
+        "rating": 4.8,
+        "count": 132
+      },
+      "topCriteria": ["jardin", "proche_plage", "calme"],
+      "interests": ["histoire", "nature", "famille"],
+      "isAvailable": false,
+      "totalPlaces": 10,
+      "numberRoom": 5,
+      "squareMeter": 120,
+      "bedRoom": 4
+    },
+    {
+      "id": "15",
+      "name": "Appartement Bord de Plage",
+      "location": "Biarritz, France",
+      "price": 260,
+      "description": "Appartement moderne avec accès direct à la plage",
+      "image": [
+        "https://medias.1001rives.fr/galerie-577875/small/0.jpw800h600.jpg"
+      ],
+      "reviews": {
+        "rating": 4.9,
+        "count": 155
+      },
+      "topCriteria": ["proche_plage", "terrasse", "wifi"],
+      "interests": ["surf", "plage", "gastronomie"],
+      "isAvailable": true,
+      "totalPlaces": 6,
+      "numberRoom": 3,
+      "squareMeter": 75,
+      "bedRoom": 2
+    }
+  ]
+}

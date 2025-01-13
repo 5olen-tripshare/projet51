@@ -1,0 +1,70 @@
+{
+  "piscine": {
+    "icon": "WavesLadder",
+    "label": "Piscine"
+  },
+  "vue_mer": {
+    "icon": "Waves",
+    "label": "Vue sur la mer"
+  },
+  "terrasse": {
+    "icon": "Sun",
+    "label": "Terrasse"
+  },
+  "proche_pistes": {
+    "icon": "CableCar",
+    "label": "Proche des pistes"
+  },
+  "cheminée": {
+    "icon": "FlameKindling",
+    "label": "Cheminée"
+  },
+  "spa": {
+    "icon": "WavesLadder",
+    "label": "Spa"
+  },
+  "centre-ville": {
+    "icon": "Building2",
+    "label": "Centre-ville"
+  },
+  "vue": {
+    "icon": "Binoculars",
+    "label": "Superbe vue"
+  },
+  "jardin": {
+    "icon": "Fence",
+    "label": "Jardin"
+  },
+  "calme": {
+    "icon": "Bird",
+    "label": "Calme"
+  },
+  "proche_plage": {
+    "icon": "Volleyball",
+    "label": "Proche de la plage"
+  },
+  "nature": {
+    "icon": "Flower2",
+    "label": "Nature"
+  },
+  "proche_transports": {
+    "icon": "BusFront",
+    "label": "Proche des transports"
+  },
+  "barbecue": {
+    "icon": "Beef",
+    "label": "Barbecue"
+  },
+  "jacuzzi": {
+    "icon": "WavesLadder",
+    "label": "Jacuzzi"
+  },
+  "vue_lac": {
+    "icon": "Waves",
+    "label": "Vue sur le lac"
+  },
+  "éco-responsable": {
+    "icon": "RefreshCcw",
+    "label": "Éco-responsable"
+  }
+}

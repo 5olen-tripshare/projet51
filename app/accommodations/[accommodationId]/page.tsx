@@ -1,7 +1,7 @@
 import Image from "next/image";
 import accommodationsData from "@/src/data/accommodations.json";
-import { MapPin } from "lucide-react";
-import { CircleUserRound } from "lucide-react";
+import * as Icons from "lucide-react";
+import topCriteriaData from "@/src/data/topCriteria.json";
 
 export default async function DetailAccommodation(props: {
   params: Promise<{
@@ -9,6 +9,11 @@ export default async function DetailAccommodation(props: {
   }>;
 }) {
   const params = await props.params;
+
+  function getIconComponent(iconName: string) {
+    return Icons[iconName as keyof typeof Icons] as React.ElementType;
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-row  justify-between  ">
@@ -21,7 +26,7 @@ export default async function DetailAccommodation(props: {
             }
           </h1>
           <div className="flex items-center text-gray-600 mb-2">
-            <MapPin className="h-4 w-4 opacity-70 mr-1" />
+            <Icons.MapPin className="h-4 w-4 opacity-70 mr-1" />
             {
               accommodationsData.accommodations[
                 Number(params.accommodationId) - 1
@@ -29,7 +34,7 @@ export default async function DetailAccommodation(props: {
             }
           </div>
           <div className="flex items-center text-gray-950 mb-6">
-            <CircleUserRound className="h-4 w-4 opacity-70 mr-1" /> Ces
+            <Icons.CircleUserRound className="h-4 w-4 opacity-70 mr-1" /> Ces
             personnes ont réservés : John Doe, John Doe
           </div>
         </div>
@@ -178,11 +183,48 @@ export default async function DetailAccommodation(props: {
       <div className="grid grid-cols-3 gap-2 mb-8">
         {accommodationsData.accommodations[
           Number(params.accommodationId) - 1
-        ].topCriteria.map((criteria) => (
-          <div className="flex items-center gap-2 mb-2" key={criteria}>
-            - {criteria}
-          </div>
-        ))}
+        ].topCriteria.map((criteria) => {
+          type CriteriaKeys = keyof typeof topCriteriaData;
+
+          const icon = topCriteriaData[criteria as CriteriaKeys].icon;
+          const IconComponent = getIconComponent(icon);
+
+          return (
+            <div className="flex items-center gap-2 mb-2" key={criteria}>
+              {IconComponent && (
+                <IconComponent className="h-5 w-5 opacity-70 mr-1" />
+              )}{" "}
+              {topCriteriaData[criteria as CriteriaKeys].label}
+            </div>
+          );
+        })}
+      </div>
+      <h2 className="text-xl font-bold mb-4">Description intérieure</h2>
+      <div className="grid grid-cols-3 gap-2 mb-8">
+        <div className="flex items-center gap-2 mb-2">
+          {
+            accommodationsData.accommodations[
+              Number(params.accommodationId) - 1
+            ].squareMeter
+          }{" "}
+          m²
+        </div>
+        <div className="flex items-center gap-2 mb-2">
+          {
+            accommodationsData.accommodations[
+              Number(params.accommodationId) - 1
+            ].numberRoom
+          }{" "}
+          pièces
+        </div>
+        <div className="flex items-center gap-2 mb-2">
+          {
+            accommodationsData.accommodations[
+              Number(params.accommodationId) - 1
+            ].bedRoom
+          }{" "}
+          chambre(s)
+        </div>
       </div>
     </div>
   );

@@ -1,18 +1,45 @@
+"use client";
+
 import Image from "next/image";
 import accommodationsData from "@/src/data/accommodations.json";
 import * as Icons from "lucide-react";
 import topCriteriaData from "@/src/data/topCriteria.json";
+import { useState } from "react";
 
-export default async function DetailAccommodation(props: {
-  params: Promise<{
+export default function DetailAccommodation(props: {
+  params: {
     accommodationId: string;
-  }>;
+  };
 }) {
-  const params = await props.params;
+  const params = props.params;
 
   function getIconComponent(iconName: string) {
     return Icons[iconName as keyof typeof Icons] as React.ElementType;
   }
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const nextImage = () =>
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex ===
+      accommodationsData.accommodations[Number(params.accommodationId) - 1]
+        .image.length -
+        1
+        ? 0
+        : prevIndex + 1
+    );
+
+  const prevImage = () =>
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0
+        ? accommodationsData.accommodations[Number(params.accommodationId) - 1]
+            .image.length - 1
+        : prevIndex - 1
+    );
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -166,10 +193,63 @@ export default async function DetailAccommodation(props: {
         </div>
       </div>
       <div className="flex justify-end mt-4">
-        <button className="bg-brown btn btn-md w-48 hover:bg-orange-300 relative z-20 -mt-20 mr-4">
+        <button
+          className="bg-brown btn btn-md w-48 hover:bg-orange-300 relative z-20 -mt-20 mr-4"
+          onClick={openModal}
+        >
           Voir toutes les photos
         </button>
       </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
+          <div className="relative bg-white p-4 rounded-lg max-w-4xl w-full">
+            <button
+              className="absolute top-1 lg:-top-20 right-1 lg:-right-20 z-20 bg-gray-600 bg-opacity-50 text-white  rounded-full hover:bg-opacity-75"
+              onClick={closeModal}
+            >
+              <Icons.X className="h-6 w-6" />
+            </button>
+
+            <div className="relative h-96">
+              <Image
+                src={
+                  accommodationsData.accommodations[
+                    Number(params.accommodationId) - 1
+                  ].image[currentImageIndex]
+                }
+                alt={`Image ${currentImageIndex + 1}`}
+                className="object-cover rounded-lg"
+                fill
+              />
+
+              <button
+                className="absolute left-0 lg:-left-20 top-1/2 transform -translate-y-1/2 bg-gray-600 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75"
+                onClick={prevImage}
+              >
+                <Icons.ChevronLeft className="h-6 w-6" />
+              </button>
+
+              <button
+                className="absolute right-0 lg:-right-20 top-1/2 transform -translate-y-1/2 bg-gray-600 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75"
+                onClick={nextImage}
+              >
+                <Icons.ChevronRight className="h-6 w-6" />
+              </button>
+            </div>
+
+            <div className="text-center mt-4">
+              {currentImageIndex + 1} /{" "}
+              {
+                accommodationsData.accommodations[
+                  Number(params.accommodationId) - 1
+                ].image.length
+              }
+            </div>
+          </div>
+        </div>
+      )}
 
       <hr className="my-6" />
       <h2 className="text-xl font-bold mb-4">Détails</h2>

@@ -1,0 +1,74 @@
+{
+  "plage": {
+    "icon": "Volleyball",
+    "label": "Plage"
+  },
+  "randonnée": {
+    "icon": "Footprints",
+    "label": "Randonnée"
+  },
+  "gastronomie": {
+    "icon": "HandPlatter",
+    "label": "Gastronomie"
+  },
+  "ski": {
+    "icon": "CableCar",
+    "label": "Ski"
+  },
+  "nature": {
+    "icon": "Flower2",
+    "label": "Nature"
+  },
+  "culture": {
+    "icon": "BookOpen",
+    "label": "Culture"
+  },
+  "shopping": {
+    "icon": "Shirt",
+    "label": "Shopping"
+  },
+  "sports_nautiques": {
+    "icon": "Sailboat",
+    "label": "Sports nautiques"
+  },
+  "détente": {
+    "icon": "TentTree",
+    "label": "Détente"
+  },
+  "aventure": {
+    "icon": "Compass",
+    "label": "Aventure"
+  },
+  "artisanat": {
+    "icon": "Anvil",
+    "label": "Artisanat"
+  },
+  "fete": {
+    "icon": "Beer",
+    "label": "Fête"
+  },
+  "vin": {
+    "icon": "Wine",
+    "label": "Vin"
+  },
+  "luxe": {
+    "icon": "Castle",
+    "label": "Luxe"
+  },
+  "casino": {
+    "icon": "Receipt",
+    "label": "Casino"
+  },
+  "histoire": {
+    "icon": "BookOpen",
+    "label": "Histoire"
+  },
+  "famille": {
+    "icon": "Users",
+    "label": "Famille"
+  },
+  "surf": {
+    "icon": "Sailboat",
+    "label": "Surf"
+  }
+}

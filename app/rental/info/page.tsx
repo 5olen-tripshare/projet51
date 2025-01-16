@@ -1,17 +1,14 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Info() {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "confirmed":
+      case "activated":
         return "bg-green-100 text-green-800";
-      case "waiting":
-        return "bg-yellow-100 text-yellow-800";
-      case "cancelled":
+      case "desactivated":
         return "bg-red-100 text-red-800";
-      case "completed":
-        return "bg-gray-100 text-gray-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -19,14 +16,10 @@ export default function Info() {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case "confirmed":
-        return "Confirmée";
-      case "waiting":
-        return "En attente";
-      case "cancelled":
-        return "Annulée";
-      case "completed":
-        return "Terminée";
+      case "activated":
+        return "Activé";
+      case "desactivated":
+        return "Désactivé";
       default:
         return status;
     }
@@ -35,9 +28,15 @@ export default function Info() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-xl font-semibold mb-6">
-          Historique des réservations
-        </h2>
+        <div className="flex flex-row justify-between ">
+          <h2 className="text-xl font-semibold mb-6">Liste des logements</h2>
+          <Link
+            href="/accommodations/new"
+            className=" btn bg-green-600 w-52 hover:bg-green-500 text-white"
+          >
+            Ajouter un logement
+          </Link>
+        </div>
 
         <div className="space-y-4">
           <div className="bg-white p-6 rounded-lg shadow-md ">
@@ -64,19 +63,19 @@ export default function Info() {
                     <p className="font-bold text-lg">200 €</p>
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-sm ${getStatusColor(
-                        "confirmed"
+                        "activated"
                       )}`}
                     >
-                      {getStatusText("confirmed")}
+                      {getStatusText("activated")}
                     </span>
                     <br />
                     <br />
                     <button
                       onClick={() => ""}
-                      className={`px-4 py-2 rounded  hover:bg-red-600 hover:text-white
+                      className={`px-4 py-2 rounded  hover:bg-orange-600 hover:text-white
                   `}
                     >
-                      Annuler la réservation
+                      Modifier
                     </button>
                   </div>
                 </div>

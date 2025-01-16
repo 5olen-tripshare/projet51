@@ -1,5 +1,6 @@
 import * as Icons from "lucide-react";
 import topCriteriaData from "@/src/data/topCriteria.json";
+import Link from "next/link";
 
 export default function New() {
   function getIconComponent(iconName: string) {
@@ -9,6 +10,12 @@ export default function New() {
   return (
     <form action="" method="post">
       <div className="container mx-auto px-4 py-8">
+        <Link
+          href="/rental/info"
+          className=" btn bg-gray-500 w-20 hover:bg-gray-400 text-white mb-6"
+        >
+          Retour
+        </Link>
         <div className="flex flex-row  justify-between">
           <div className="">
             <h1 className="text-3xl font-bold mb-2">
@@ -29,6 +36,7 @@ export default function New() {
           </div>
           <div className="end-0 flex flex-col items-end">
             <br />
+
             <div className="text-orange-500 mb-2">
               <span className="text-2xl font-bold">
                 <input

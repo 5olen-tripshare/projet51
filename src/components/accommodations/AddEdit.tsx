@@ -2,6 +2,8 @@
 import * as Icons from "lucide-react";
 import topCriteriaData from "@/src/data/topCriteria.json";
 import Link from "next/link";
+import { useState } from "react";
+import Image from "next/image";
 
 export function AddEdit(props: {
   accommodation?: {
@@ -28,7 +30,7 @@ export function AddEdit(props: {
     return Icons[iconName as keyof typeof Icons] as React.ElementType;
   }
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -41,6 +43,7 @@ export function AddEdit(props: {
     const pieces = formData.get("pieces");
     const chambre = formData.get("chambre");
     const files = formData.getAll("file") as File[];
+    const ancienneImage = formData.getAll("ancienneImage[]");
 
     files.forEach((file, index) => {
       console.log(`Fichier ${index + 1}:`);
@@ -58,6 +61,7 @@ export function AddEdit(props: {
       pieces,
       chambre,
       files,
+      ancienneImage,
     };
 
     console.log(data);
@@ -65,17 +69,19 @@ export function AddEdit(props: {
 
   const accommodation = props.accommodation;
 
-  const isAddMode = !accommodation;
-
-  let action = "/api/accommodation/add";
-
-  if (!isAddMode) {
-    action = "/api/accommodation/edit";
-  }
+  const [name, setName] = useState(accommodation?.name);
+  const [localisation, setLocalisation] = useState(accommodation?.location);
+  const [price, setPrice] = useState(accommodation?.price);
+  const [metre2, setMetre2] = useState(accommodation?.squareMeter);
+  const [description, setDescription] = useState(accommodation?.description);
+  const [numberRoom, setNumberRoom] = useState(accommodation?.numberRoom);
+  const [bedRoom, setBedRoom] = useState(accommodation?.bedRoom);
+  const [topCriteria, setTopCriteria] = useState(accommodation?.topCriteria);
+  const [image, setImage] = useState(accommodation?.image);
+  const [countImage, setCountImage] = useState(0);
 
   return (
     <form
-      // action={action}
       onSubmit={(e) => {
         handleSubmit(e);
       }}
@@ -93,7 +99,8 @@ export function AddEdit(props: {
             <h1 className="text-3xl font-bold mb-2">
               <input
                 name="name"
-                value={accommodation?.name}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="border-collapse border border-neutral-300 rounded-lg"
                 placeholder="Nom du logement"
               />
@@ -102,7 +109,8 @@ export function AddEdit(props: {
               <Icons.MapPin className="h-4 w-4 opacity-70 mr-1" />
               <input
                 name="localisation"
-                value={accommodation?.location}
+                value={localisation}
+                onChange={(e) => setLocalisation(e.target.value)}
                 className="border-collapse border border-neutral-300 rounded-md"
                 placeholder="Localisation"
               />
@@ -115,7 +123,8 @@ export function AddEdit(props: {
               <span className="text-2xl font-bold">
                 <input
                   name="price"
-                  value={accommodation?.price}
+                  value={price}
+                  onChange={(e) => setPrice(Number(e.target.value))}
                   className="border-collapse border border-neutral-300 rounded-md text-right mr-1 w-20"
                   type="number"
                   placeholder="0"
@@ -127,17 +136,52 @@ export function AddEdit(props: {
             </div>
           </div>
         </div>
-        <div className="relative h-96 mx-56 my-4">
-          <div className="object-cover rounded-lg md:border-collapse md:border border-neutral-400  h-96">
-            <div className="absolute inset-0 flex flex-row items-center justify-center text-center z-10">
-              <input
-                type="file"
-                name="file"
-                className=" text-lg mt-2 mr-2"
-                multiple={true}
-              />
-              <Icons.Download />
-            </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
+          {image?.map((img, index) => {
+            return (
+              <div key={index} className="relative h-48 ">
+                <button
+                  className="absolute top-1 lg:-top-2 right-1 lg:-right-2 z-20 bg-red-600  text-white  rounded-full hover:bg-opacity-75"
+                  onClick={() => setImage(image?.filter((c) => c !== img))}
+                >
+                  <Icons.X className="h-6 w-6" />
+                </button>
+                <Image
+                  src={img}
+                  alt={`image${index}`}
+                  fill
+                  className="object-cover rounded-lg"
+                />
+                <input type="hidden" name="ancienneImage[]" value={img} />
+              </div>
+            );
+          })}
+        </div>
+        <div className="my-4 flex flex-row">
+          <label
+            htmlFor="file-upload"
+            // bg-brown btn btn-md w-48 hover:bg-orange-300 relative z-20 -mt-20 mr-4
+            className="cursor-pointer bg-brown text-white py-2 px-4 rounded-lg hover:bg-orange-300"
+          >
+            Ajouter des images
+          </label>
+          <input
+            id="file-upload"
+            type="file"
+            name="file"
+            className="hidden"
+            multiple={true}
+            onChange={(e) => {
+              const files = e.target.files;
+              if (files) {
+                console.log("Fichiers sélectionnés :", files);
+                setCountImage(countImage + files.length);
+              }
+            }}
+          />
+          <div className="py-2 px-4">
+            {countImage != 0 ? countImage + " images sélectionnées" : ""}
           </div>
         </div>
 
@@ -145,7 +189,9 @@ export function AddEdit(props: {
         <h2 className="text-xl font-bold mb-4">Détails</h2>
 
         <div className="mb-8">
-          <textarea className="border-collapse border border-neutral-300 rounded-md w-full h-36" />
+          <textarea className="border-collapse border border-neutral-300 rounded-md w-full h-36">
+            {description}
+          </textarea>
         </div>
         <h2 className="text-xl font-bold mb-4">Top critères</h2>
         <div className="grid grid-cols-3 gap-2 mb-8">
@@ -154,9 +200,15 @@ export function AddEdit(props: {
 
             const icon = topCriteriaData[criteria as CriteriaKeys].icon;
             const IconComponent = getIconComponent(icon);
-            const checked = accommodation?.topCriteria.includes(criteria)
-              ? true
-              : false;
+            const checked = topCriteria?.includes(criteria) ? true : false;
+
+            const handleCheckboxChange = () => {
+              if (checked) {
+                setTopCriteria(topCriteria?.filter((c) => c !== criteria));
+              } else {
+                setTopCriteria([...(topCriteria || []), criteria]);
+              }
+            };
 
             return (
               <div className="flex items-center gap-2 mb-2" key={criteria}>
@@ -164,6 +216,8 @@ export function AddEdit(props: {
                   <input
                     type="checkbox"
                     checked={checked}
+                    onClick={handleCheckboxChange}
+                    value={criteria}
                     className="checkbox mr-1"
                     name={"criteria[]"}
                   />
@@ -183,7 +237,8 @@ export function AddEdit(props: {
           <div className="flex items-center gap-2 mb-2">
             <input
               type="number"
-              value={accommodation?.numberRoom}
+              value={metre2}
+              onChange={(e) => setMetre2(Number(e.target.value))}
               name="metre2"
               className="border-collapse border border-neutral-300 rounded-md text-right mr-1 w-14"
             />{" "}
@@ -192,7 +247,8 @@ export function AddEdit(props: {
           <div className="flex items-center gap-2 mb-2">
             <input
               type="number"
-              value={accommodation?.numberRoom}
+              value={numberRoom}
+              onChange={(e) => setNumberRoom(Number(e.target.value))}
               name="pieces"
               className="border-collapse border border-neutral-300 rounded-md text-right mr-1 w-10"
             />{" "}
@@ -201,7 +257,8 @@ export function AddEdit(props: {
           <div className="flex items-center gap-2 mb-2">
             <input
               type="number"
-              value={accommodation?.bedRoom}
+              value={bedRoom}
+              onChange={(e) => setBedRoom(Number(e.target.value))}
               name="chambre"
               className="border-collapse border border-neutral-300 rounded-md text-right mr-1 w-10"
             />{" "}
@@ -210,9 +267,9 @@ export function AddEdit(props: {
         </div>
         <button
           type="submit"
-          className="btn bg-brown w-full hover:bg-orange-300"
+          className="btn bg-green-600 w-full hover:bg-green-500"
         >
-          Créer
+          Valider
         </button>
       </div>
     </form>

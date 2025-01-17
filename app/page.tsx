@@ -1,4 +1,4 @@
-import { AccommodationCard } from "@/src/components/accommodationCard";
+import { AccommodationCard } from "@/src/components/accommodations/accommodationCard";
 import accommodationsData from "@/src/data/accommodations.json";
 import Image from "next/image";
 import Form from "next/form";

@@ -11,7 +11,7 @@ export function Navbar() {
 
           <div className="hidden md:flex items-center space-x-4">
             <Link
-              href="/rental"
+              href="/rental/info"
               className="text-gray-600 hover:text-blue-600 transition-colors"
             >
               Mes annonces

@@ -70,13 +70,13 @@ export default function Info() {
                     </span>
                     <br />
                     <br />
-                    <button
-                      onClick={() => ""}
+                    <Link
+                      href={"/accommodations/edit"}
                       className={`px-4 py-2 rounded  hover:bg-orange-600 hover:text-white
                   `}
                     >
                       Modifier
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

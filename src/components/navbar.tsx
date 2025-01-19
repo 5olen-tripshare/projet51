@@ -17,7 +17,7 @@ export function Navbar() {
               Mes annonces
             </Link>
             <Link
-              href="/account"
+              href="/account/info"
               className="text-gray-600 hover:text-blue-600 transition-colors"
             >
               Mon Compte

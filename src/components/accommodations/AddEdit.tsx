@@ -4,10 +4,12 @@ import topCriteriaData from "@/src/data/topCriteria.json";
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
+import { createAccommodation, updateAccommodation } from "@/src/lib/api";
+import { useRouter } from "next/navigation";
 
 export function AddEdit(props: {
   accommodation?: {
-    id: string;
+    _id: string;
     name: string;
     location: string;
     price: number;
@@ -26,11 +28,13 @@ export function AddEdit(props: {
     bedRoom: number;
   };
 }) {
+  const router = useRouter();
+
   function getIconComponent(iconName: string) {
     return Icons[iconName as keyof typeof Icons] as React.ElementType;
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -64,7 +68,18 @@ export function AddEdit(props: {
       ancienneImage,
     };
 
-    console.log(data);
+    try {
+      if (accommodation?._id) {
+        await updateAccommodation(accommodation._id, data);
+      } else {
+        await createAccommodation(data);
+      }
+
+      router.push("/rental/info");
+    } catch (error) {
+      console.error("Erreur :", error);
+      alert("Une erreur est survenue.");
+    }
   }
 
   const accommodation = props.accommodation;

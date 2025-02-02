@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export function AccommodationCard(props: {
   accommodation: {
-    id: string;
+    _id: string;
     name: string;
     location: string;
     price: number;
@@ -25,7 +25,7 @@ export function AccommodationCard(props: {
   const accommodation = props.accommodation;
 
   return (
-    <Link href={`/accommodations/${accommodation.id}`}>
+    <Link href={`/accommodations/${accommodation._id}`}>
       <div className="bg-brown border-collapse border border-brown rounded-lg shadow-xl overflow-hidden transition-transform hover:scale-105 cursor-pointer w-full h-96">
         <div className="relative h-48 w-full">
           <Image

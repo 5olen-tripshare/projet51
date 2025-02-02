@@ -1,7 +1,7 @@
 {
   "accommodations": [
     {
-      "id": "1",
+      "_id": "1",
       "name": "Villa Côte d'Azur",
       "location": "Nice, France",
       "price": 400,
@@ -24,7 +24,7 @@
       "bedRoom": 3
     },
     {
-      "id": "2",
+      "_id": "2",
       "name": "Chalet Alpin Luxe",
       "location": "Chamonix, France",
       "price": 320,
@@ -45,7 +45,7 @@
       "bedRoom": 3
     },
     {
-      "id": "3",
+      "_id": "3",
       "name": "Appartement Moderne",
       "location": "Paris, France",
       "price": 180,
@@ -66,7 +66,7 @@
       "bedRoom": 1
     },
     {
-      "id": "4",
+      "_id": "4",
       "name": "Maison Provençale",
       "location": "Aix-en-Provence, France",
       "price": 270,
@@ -87,7 +87,7 @@
       "bedRoom": 3
     },
     {
-      "id": "5",
+      "_id": "5",
       "name": "Loft Industriel",
       "location": "Lyon, France",
       "price": 200,
@@ -108,7 +108,7 @@
       "bedRoom": 1
     },
     {
-      "id": "6",
+      "_id": "6",
       "name": "Villa Tropicale",
       "location": "Guadeloupe, France",
       "price": 280,
@@ -129,7 +129,7 @@
       "bedRoom": 2
     },
     {
-      "id": "7",
+      "_id": "7",
       "name": "Cabane en Forêt",
       "location": "Dordogne, France",
       "price": 150,
@@ -150,7 +150,7 @@
       "bedRoom": 1
     },
     {
-      "id": "8",
+      "_id": "8",
       "name": "Riad Marocain",
       "location": "Marrakech, Maroc",
       "price": 300,
@@ -171,7 +171,7 @@
       "bedRoom": 4
     },
     {
-      "id": "9",
+      "_id": "9",
       "name": "Appartement Design",
       "location": "Berlin, Allemagne",
       "price": 190,
@@ -192,7 +192,7 @@
       "bedRoom": 1
     },
     {
-      "id": "10",
+      "_id": "10",
       "name": "Maison de Campagne",
       "location": "Bordeaux, France",
       "price": 220,
@@ -213,7 +213,7 @@
       "bedRoom": 3
     },
     {
-      "id": "11",
+      "_id": "11",
       "name": "Studio Cosy",
       "location": "Montpellier, France",
       "price": 120,
@@ -234,7 +234,7 @@
       "bedRoom": 1
     },
     {
-      "id": "12",
+      "_id": "12",
       "name": "Penthouse Luxe",
       "location": "Monaco",
       "price": 600,
@@ -255,7 +255,7 @@
       "bedRoom": 4
     },
     {
-      "id": "13",
+      "_id": "13",
       "name": "Tiny House Écologique",
       "location": "Annecy, France",
       "price": 140,
@@ -276,7 +276,7 @@
       "bedRoom": 1
     },
     {
-      "id": "14",
+      "_id": "14",
       "name": "Gîte Familial",
       "location": "Normandie, France",
       "price": 180,
@@ -297,7 +297,7 @@
       "bedRoom": 4
     },
     {
-      "id": "15",
+      "_id": "15",
       "name": "Appartement Bord de Plage",
       "location": "Biarritz, France",
       "price": 260,

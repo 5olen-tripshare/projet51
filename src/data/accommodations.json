@@ -1,15 +1,15 @@
 {
   "accommodations": [
     {
-      "id": "1",
+      "_id": "1",
       "name": "Villa Côte d'Azur",
-      "location": "Nice, France",
+      "localisation": "Nice, France",
       "price": 400,
       "description": "Spacieuse villa avec piscine privée, terrasse et vue imprenable sur la mer Méditerranée.",
       "image": [
         "https://cf.bstatic.com/xdata/images/hotel/max1024x768/437582157.jpg?k=af0d3f936d81804499134f0c06d372be35d032473ef3738ad2e4917064ac7d35&o=&hp=1",
         "https://carte-blanche.com/app/uploads/2021/07/Chalet-Thovex-Val-dIsere-Exterieur-06-1536x1026.jpg",
-        "https://resize-elle.ladmedia.fr/rcrop/638,,forcex/img/var/plain_site/storage/images/deco/reportages/city-guide/location-appartement-paris/83572457-1-fre-FR/Airbnb-Paris-15-lofts-appartements-et-maisons-de-reve-a-Paris.jpg"
+        "https://resize-elle.ladmedia.fr/rcrop/638,,forcex/img/var/plain_site/storage/images/deco/reportages/city-guide/localisation-appartement-paris/83572457-1-fre-FR/Airbnb-Paris-15-lofts-appartements-et-maisons-de-reve-a-Paris.jpg"
       ],
       "reviews": {
         "rating": 4.9,
@@ -24,9 +24,9 @@
       "bedRoom": 3
     },
     {
-      "id": "2",
+      "_id": "2",
       "name": "Chalet Alpin Luxe",
-      "location": "Chamonix, France",
+      "localisation": "Chamonix, France",
       "price": 320,
       "description": "Superbe chalet alpin avec accès direct aux pistes",
       "image": [
@@ -45,13 +45,13 @@
       "bedRoom": 3
     },
     {
-      "id": "3",
+      "_id": "3",
       "name": "Appartement Moderne",
-      "location": "Paris, France",
+      "localisation": "Paris, France",
       "price": 180,
       "description": "Appartement moderne situé au cœur de Paris avec vue sur la Tour Eiffel",
       "image": [
-        "https://resize-elle.ladmedia.fr/rcrop/638,,forcex/img/var/plain_site/storage/images/deco/reportages/city-guide/location-appartement-paris/83572457-1-fre-FR/Airbnb-Paris-15-lofts-appartements-et-maisons-de-reve-a-Paris.jpg"
+        "https://resize-elle.ladmedia.fr/rcrop/638,,forcex/img/var/plain_site/storage/images/deco/reportages/city-guide/localisation-appartement-paris/83572457-1-fre-FR/Airbnb-Paris-15-lofts-appartements-et-maisons-de-reve-a-Paris.jpg"
       ],
       "reviews": {
         "rating": 4.6,
@@ -66,9 +66,9 @@
       "bedRoom": 1
     },
     {
-      "id": "4",
+      "_id": "4",
       "name": "Maison Provençale",
-      "location": "Aix-en-Provence, France",
+      "localisation": "Aix-en-Provence, France",
       "price": 270,
       "description": "Charmante maison provençale avec jardin et piscine privée",
       "image": [
@@ -87,9 +87,9 @@
       "bedRoom": 3
     },
     {
-      "id": "5",
+      "_id": "5",
       "name": "Loft Industriel",
-      "location": "Lyon, France",
+      "localisation": "Lyon, France",
       "price": 200,
       "description": "Loft au style industriel avec grande terrasse en plein centre",
       "image": [
@@ -108,9 +108,9 @@
       "bedRoom": 1
     },
     {
-      "id": "6",
+      "_id": "6",
       "name": "Villa Tropicale",
-      "location": "Guadeloupe, France",
+      "localisation": "Guadeloupe, France",
       "price": 280,
       "description": "Villa avec piscine et jardin tropical, proche de la plage",
       "image": [
@@ -129,9 +129,9 @@
       "bedRoom": 2
     },
     {
-      "id": "7",
+      "_id": "7",
       "name": "Cabane en Forêt",
-      "location": "Dordogne, France",
+      "localisation": "Dordogne, France",
       "price": 150,
       "description": "Cabane rustique nichée au cœur de la forêt",
       "image": [
@@ -150,9 +150,9 @@
       "bedRoom": 1
     },
     {
-      "id": "8",
+      "_id": "8",
       "name": "Riad Marocain",
-      "location": "Marrakech, Maroc",
+      "localisation": "Marrakech, Maroc",
       "price": 300,
       "description": "Riad traditionnel avec patio et piscine intérieure",
       "image": [
@@ -171,9 +171,9 @@
       "bedRoom": 4
     },
     {
-      "id": "9",
+      "_id": "9",
       "name": "Appartement Design",
-      "location": "Berlin, Allemagne",
+      "localisation": "Berlin, Allemagne",
       "price": 190,
       "description": "Appartement au design contemporain dans le quartier branché de Kreuzberg",
       "image": [
@@ -192,9 +192,9 @@
       "bedRoom": 1
     },
     {
-      "id": "10",
+      "_id": "10",
       "name": "Maison de Campagne",
-      "location": "Bordeaux, France",
+      "localisation": "Bordeaux, France",
       "price": 220,
       "description": "Maison de campagne rustique avec grand jardin et terrasse",
       "image": [
@@ -213,9 +213,9 @@
       "bedRoom": 3
     },
     {
-      "id": "11",
+      "_id": "11",
       "name": "Studio Cosy",
-      "location": "Montpellier, France",
+      "localisation": "Montpellier, France",
       "price": 120,
       "description": "Studio moderne et cosy situé en plein centre-ville",
       "image": [
@@ -234,9 +234,9 @@
       "bedRoom": 1
     },
     {
-      "id": "12",
+      "_id": "12",
       "name": "Penthouse Luxe",
-      "location": "Monaco",
+      "localisation": "Monaco",
       "price": 600,
       "description": "Penthouse de luxe avec vue panoramique sur la mer",
       "image": [
@@ -255,9 +255,9 @@
       "bedRoom": 4
     },
     {
-      "id": "13",
+      "_id": "13",
       "name": "Tiny House Écologique",
-      "location": "Annecy, France",
+      "localisation": "Annecy, France",
       "price": 140,
       "description": "Tiny house écologique au bord du lac",
       "image": [
@@ -276,9 +276,9 @@
       "bedRoom": 1
     },
     {
-      "id": "14",
+      "_id": "14",
       "name": "Gîte Familial",
-      "location": "Normandie, France",
+      "localisation": "Normandie, France",
       "price": 180,
       "description": "Gîte spacieux idéal pour les familles, proche des plages du Débarquement",
       "image": [
@@ -297,9 +297,9 @@
       "bedRoom": 4
     },
     {
-      "id": "15",
+      "_id": "15",
       "name": "Appartement Bord de Plage",
-      "location": "Biarritz, France",
+      "localisation": "Biarritz, France",
       "price": 260,
       "description": "Appartement moderne avec accès direct à la plage",
       "image": [

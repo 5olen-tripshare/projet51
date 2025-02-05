@@ -3,12 +3,45 @@ import { AccommodationCard } from "@/src/components/accommodations/accommodation
 import accommodationsData from "@/src/data/accommodations.json";
 import Image from "next/image";
 import { MapPin } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchAccommodations } from "@/src/lib/api";
+
+type Accommodation = {
+  _id: string;
+  name: string;
+  localisation: string;
+  price: number;
+  description: string;
+  image: string[];
+  reviews: {
+    rating: number;
+    count: number;
+  };
+  topCriteria: string[];
+  interests: string[];
+  isAvailable: boolean;
+  totalPlaces: number;
+  numberRoom: number;
+  squareMeter: number;
+  bedRoom: number;
+};
 
 export default function Home() {
-  const [accommodations, setAccommodations] = useState(
-    accommodationsData.accommodations
+  const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
+  const [accommodationsData, setAccommodationsData] = useState<Accommodation[]>(
+    []
   );
+
+  useEffect(() => {
+    async function loadAccommodations() {
+      const data = await fetchAccommodations();
+      console.log(data);
+      setAccommodationsData(data);
+      setAccommodations(data);
+    }
+    loadAccommodations();
+  }, []);
+
   const [destination, setDestination] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -45,24 +78,22 @@ export default function Home() {
     };
     console.log(data);
 
-    const filteredAccommodations = accommodationsData.accommodations.filter(
-      (acc) => {
-        if (!acc.isAvailable) return false;
+    const filteredAccommodations = accommodationsData.filter((acc) => {
+      if (!acc.isAvailable) return false;
 
-        // !!!!!!!! A FAIRE !!!!!!!!
-        // ajouter les conditions des dates par rapport à la disponibilité
+      // !!!!!!!! A FAIRE !!!!!!!!
+      // ajouter les conditions des dates par rapport à la disponibilité
 
-        if (
-          !acc.location
-            .toLowerCase()
-            .includes(String(destination)?.toLowerCase())
-        ) {
-          return false;
-        }
-
-        return true;
+      if (
+        !acc.localisation
+          .toLowerCase()
+          .includes(String(destination)?.toLowerCase())
+      ) {
+        return false;
       }
-    );
+
+      return true;
+    });
 
     setAccommodations(filteredAccommodations);
   }
@@ -142,7 +173,7 @@ export default function Home() {
       <div className="grid grid-cols-1  md:grid-cols-2  xl:grid-cols-3 gap-6 pt-16">
         {currentData.map((accommodation) => (
           <AccommodationCard
-            key={accommodation.id}
+            key={accommodation._id}
             accommodation={accommodation}
           />
         ))}

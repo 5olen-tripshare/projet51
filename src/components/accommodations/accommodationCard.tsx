@@ -5,7 +5,7 @@ export function AccommodationCard(props: {
   accommodation: {
     _id: string;
     name: string;
-    location: string;
+    localisation: string;
     price: number;
     description: string;
     image: string[];
@@ -39,7 +39,7 @@ export function AccommodationCard(props: {
         <div className="relative p-4 h-48">
           <div className="max-h-36 overflow-hidden">
             <p className="text-lightGreen text-sm mb-1">
-              {accommodation.location}
+              {accommodation.localisation}
             </p>
             <h3 className="text-lg font-semibold text-white ">
               {accommodation.name} - {accommodation.totalPlaces} personnes

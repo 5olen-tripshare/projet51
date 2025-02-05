@@ -7,7 +7,7 @@ import { fetchAccommodations } from "@/src/lib/api";
 type Accommodation = {
   _id: string;
   name: string;
-  location: string;
+  localisation: string;
   price: number;
   description: string;
   image: string[];

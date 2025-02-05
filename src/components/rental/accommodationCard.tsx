@@ -5,7 +5,7 @@ export function AccommodationCard(props: {
   accommodation: {
     _id: string;
     name: string;
-    location: string;
+    localisation: string;
     price: number;
     description: string;
     image: string[];
@@ -63,7 +63,7 @@ export function AccommodationCard(props: {
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-semibold text-lg">{accommodation.name}</h3>
-                <p className="text-gray-600">{accommodation.location}</p>
+                <p className="text-gray-600">{accommodation.localisation}</p>
                 <p className="mt-2">
                   Du {"2024-08-15"} au {"2024-08-22"}
                 </p>

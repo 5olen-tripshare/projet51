@@ -1,6 +1,8 @@
 "use client";
 import * as Icons from "lucide-react";
 import topCriteriaData from "@/src/data/topCriteria.json";
+import listInterests from "@/src/data/interests.json";
+
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
@@ -11,14 +13,14 @@ export function AddEdit(props: {
   accommodation?: {
     _id: string;
     name: string;
-    location: string;
+    localisation: string;
     price: number;
     description: string;
     image: string[];
-    reviews: {
-      rating: number;
-      count: number;
-    };
+    // reviews: {
+    //   rating: number;
+    //   count: number;
+    // };
     topCriteria: string[];
     interests: string[];
     isAvailable: boolean;
@@ -38,37 +40,44 @@ export function AddEdit(props: {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
-    // const data = Object.fromEntries(formData.entries());
+
+    const userId = "60b6f7b3b3b3b30015f1b3b3";
+    const isAvailable = true;
     const name = formData.get("name");
     const localisation = formData.get("localisation");
-    const price = formData.get("price");
-    const criteria = formData.getAll("criteria[]");
-    const metre2 = formData.get("metre2");
-    const pieces = formData.get("pieces");
-    const chambre = formData.get("chambre");
+    const description = formData.get("description");
+    const price = Number(formData.get("price"));
+    const totalPlaces = Number(formData.get("totalPlaces"));
+    const squareMeter = Number(formData.get("squareMeter"));
+    const numberRoom = Number(formData.get("numberRoom"));
+    const bedRoom = Number(formData.get("bedRoom"));
+    const interests = formData.getAll("interests[]");
+    const topCriteria = formData.getAll("topCriteria[]");
     const files = formData.getAll("file") as File[];
     const ancienneImage = formData.getAll("ancienneImage[]");
 
-    files.forEach((file, index) => {
-      console.log(`Fichier ${index + 1}:`);
-      console.log(`- Nom: ${file.name}`);
-      console.log(`- Taille: ${file.size} bytes`);
-      console.log(`- Type: ${file.type}`);
-    });
+    const imagesToUpload = files.length > 0 ? files : undefined;
 
     const data = {
+      userId,
+      isAvailable,
       name,
       localisation,
+      description,
       price,
-      criteria,
-      metre2,
-      pieces,
-      chambre,
-      files,
+      topCriteria,
+      interests,
+      squareMeter,
+      totalPlaces,
+      numberRoom,
+      bedRoom,
+      files: imagesToUpload,
       ancienneImage,
     };
 
     try {
+      console.log("Données envoyées :", data);
+
       if (accommodation?._id) {
         await updateAccommodation(accommodation._id, data);
       } else {
@@ -77,21 +86,23 @@ export function AddEdit(props: {
 
       router.push("/rental/info");
     } catch (error) {
-      console.error("Erreur :", error);
-      alert("Une erreur est survenue.");
+      console.error("Erreur lors de l'enregistrement :", error);
+      alert("Une erreur est survenue. Veuillez réessayer.");
     }
   }
 
   const accommodation = props.accommodation;
 
   const [name, setName] = useState(accommodation?.name);
-  const [localisation, setLocalisation] = useState(accommodation?.location);
+  const [localisation, setLocalisation] = useState(accommodation?.localisation);
   const [price, setPrice] = useState(accommodation?.price);
   const [metre2, setMetre2] = useState(accommodation?.squareMeter);
   const [description, setDescription] = useState(accommodation?.description);
   const [numberRoom, setNumberRoom] = useState(accommodation?.numberRoom);
   const [bedRoom, setBedRoom] = useState(accommodation?.bedRoom);
   const [topCriteria, setTopCriteria] = useState(accommodation?.topCriteria);
+  const [interests, setInterests] = useState(accommodation?.interests);
+  const [totalPlaces, setTotalPlaces] = useState(accommodation?.totalPlaces);
   const [image, setImage] = useState(accommodation?.image);
   const [countImage, setCountImage] = useState(0);
 
@@ -101,6 +112,7 @@ export function AddEdit(props: {
         handleSubmit(e);
       }}
       method="post"
+      encType="multipart/form-data"
     >
       <div className="container mx-auto px-4 py-8">
         <Link
@@ -204,10 +216,67 @@ export function AddEdit(props: {
         <h2 className="text-xl font-bold mb-4">Détails</h2>
 
         <div className="mb-8">
-          <textarea className="border-collapse border border-neutral-300 rounded-md w-full h-36">
+          <textarea
+            name="description"
+            className="border-collapse border border-neutral-300 rounded-md w-full h-36"
+          >
             {description}
           </textarea>
         </div>
+        <div className="mb-8">
+          Nombres de personnes maximum :{" "}
+          <input
+            type="number"
+            value={totalPlaces}
+            onChange={(e) => setTotalPlaces(Number(e.target.value))}
+            name="totalPlaces"
+            className="border-collapse border border-neutral-300 rounded-md text-right mr-1 w-14"
+          />{" "}
+        </div>
+        <h2 className="text-xl font-bold mb-4">Description intérieure</h2>
+
+        <h2 className="text-xl font-bold mb-4">Intérets</h2>
+        <div className="grid grid-cols-3 gap-2 mb-8">
+          {Object.keys(listInterests).map((interest) => {
+            type InterestKeys = keyof typeof listInterests;
+
+            const icon = listInterests[interest as InterestKeys].icon;
+            const IconComponent = getIconComponent(icon);
+            const checkedInterest = interests?.includes(interest)
+              ? true
+              : false;
+
+            const handleCheckboxChange = () => {
+              if (checkedInterest) {
+                setInterests(interests?.filter((c) => c !== interest));
+              } else {
+                setInterests([...(interests || []), interest]);
+              }
+            };
+
+            return (
+              <div className="flex items-center gap-2 mb-2" key={interest}>
+                <label className="cursor-pointer label">
+                  <input
+                    type="checkbox"
+                    checked={checkedInterest}
+                    onChange={handleCheckboxChange}
+                    value={interest}
+                    className="checkbox mr-1"
+                    name={"interests[]"}
+                  />
+                  {IconComponent && (
+                    <IconComponent className="h-5 w-5 opacity-70 mr-1" />
+                  )}{" "}
+                  <span className="label-text">
+                    {listInterests[interest as InterestKeys].label}
+                  </span>
+                </label>
+              </div>
+            );
+          })}
+        </div>
+
         <h2 className="text-xl font-bold mb-4">Top critères</h2>
         <div className="grid grid-cols-3 gap-2 mb-8">
           {Object.keys(topCriteriaData).map((criteria) => {
@@ -231,10 +300,10 @@ export function AddEdit(props: {
                   <input
                     type="checkbox"
                     checked={checked}
-                    onClick={handleCheckboxChange}
+                    onChange={handleCheckboxChange}
                     value={criteria}
                     className="checkbox mr-1"
-                    name={"criteria[]"}
+                    name={"topCriteria[]"}
                   />
                   {IconComponent && (
                     <IconComponent className="h-5 w-5 opacity-70 mr-1" />
@@ -254,7 +323,7 @@ export function AddEdit(props: {
               type="number"
               value={metre2}
               onChange={(e) => setMetre2(Number(e.target.value))}
-              name="metre2"
+              name="squareMeter"
               className="border-collapse border border-neutral-300 rounded-md text-right mr-1 w-14"
             />{" "}
             m²
@@ -264,7 +333,7 @@ export function AddEdit(props: {
               type="number"
               value={numberRoom}
               onChange={(e) => setNumberRoom(Number(e.target.value))}
-              name="pieces"
+              name="numberRoom"
               className="border-collapse border border-neutral-300 rounded-md text-right mr-1 w-10"
             />{" "}
             pièces
@@ -274,7 +343,7 @@ export function AddEdit(props: {
               type="number"
               value={bedRoom}
               onChange={(e) => setBedRoom(Number(e.target.value))}
-              name="chambre"
+              name="bedRoom"
               className="border-collapse border border-neutral-300 rounded-md text-right mr-1 w-10"
             />{" "}
             chambre(s)

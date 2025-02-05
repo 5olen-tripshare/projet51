@@ -7,7 +7,7 @@ import * as Icons from "lucide-react";
 type Props = {
   accommodation: {
     name: string;
-    location: string;
+    localisation: string;
     price: number;
     image: string[];
     description: string;

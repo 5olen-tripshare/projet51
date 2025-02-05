@@ -23,7 +23,7 @@ export default async function DetailAccommodation(props: {
           <h1 className="text-3xl font-bold mb-2">{accommodation.name}</h1>
           <div className="flex items-center text-gray-600 mb-2">
             <Icons.MapPin className="h-4 w-4 opacity-70 mr-1" />
-            {accommodation.location}
+            {accommodation.localisation}
           </div>
           <div className="flex items-center text-gray-950 mb-6">
             <Icons.CircleUserRound className="h-4 w-4 opacity-70 mr-1" /> Ces

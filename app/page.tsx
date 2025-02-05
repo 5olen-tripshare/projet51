@@ -9,7 +9,7 @@ import { fetchAccommodations } from "@/src/lib/api";
 type Accommodation = {
   _id: string;
   name: string;
-  location: string;
+  localisation: string;
   price: number;
   description: string;
   image: string[];
@@ -85,7 +85,9 @@ export default function Home() {
       // ajouter les conditions des dates par rapport à la disponibilité
 
       if (
-        !acc.location.toLowerCase().includes(String(destination)?.toLowerCase())
+        !acc.localisation
+          .toLowerCase()
+          .includes(String(destination)?.toLowerCase())
       ) {
         return false;
       }

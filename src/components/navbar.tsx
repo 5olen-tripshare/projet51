@@ -1,6 +1,12 @@
+"use client";
+
 import Link from "next/link";
+import { signIn, useSession } from "next-auth/react";
+import { handleLogout } from "../utils/auth";
 
 export function Navbar() {
+  const { data: session } = useSession();
+
   return (
     <nav className="bg-white shadow-md">
       <div className="container mx-auto px-4">
@@ -10,25 +16,38 @@ export function Navbar() {
           </Link>
 
           <div className="hidden md:flex items-center space-x-4">
-            <Link
-              href="/rental"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              Mes annonces
-            </Link>
-            <Link
-              href="/account/info"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              Mon Compte
-            </Link>
+            {session && (
+              <>
+                <Link
+                  href="/rental"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Mes annonces
+                </Link>
+                <Link
+                  href="/account/info"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Mon Compte
+                </Link>
+              </>
+            )}
 
-            <Link
-              href="/login"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-            >
-              Connexion
-            </Link>
+            {session ? (
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
+              >
+                Déconnexion
+              </button>
+            ) : (
+              <button
+                onClick={() => signIn("fusionauth")}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+              >
+                Connexion
+              </button>
+            )}
           </div>
         </div>
       </div>

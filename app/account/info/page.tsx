@@ -1,20 +1,38 @@
 "use client";
 import { Card } from "@/src/components/ui/card";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function Info() {
-  const userInfo = {
-    fullName: "John Doe",
-    email: "john.doe@example.com",
-    password: "********",
-    phoneNumber: "123-456-7890",
-    address: "123 Main St, Anytown, USA",
-    birthDate: "1990-01-01",
-    interests: "Reading, Traveling, Coding",
+  const { data: session } = useSession();
+
+  console.log("Session utilisateur créée :", session);
+
+  const defaultUserInfo = {
+    nomComplet: "Nom non disponible",
+    email: "Email non disponible",
+    telephone: "Téléphone non disponible",
+    dateDeNaissance: "Date de naissance non disponible",
+    interets: "Intérêts non disponibles",
   };
 
+  const [user, setUser] = useState(defaultUserInfo);
+
+  // Synchronisation de l'état avec la session
+  useEffect(() => {
+    if (session?.user) {
+      setUser((prevUser) => ({
+        ...prevUser,
+        nomComplet: session.user.name || prevUser.nomComplet,
+        email: session.user.email || prevUser.email,
+        telephone: session.user.mobilePhone || prevUser.telephone,
+        dateDeNaissance: session.user.birthdate || prevUser.dateDeNaissance,
+        interets: session.user.interests || prevUser.interets,
+      }));
+    }
+  }, [session]);
+
   const [editableField, setEditableField] = useState<string | null>(null);
-  const [user, setUser] = useState(userInfo);
 
   const handleEdit = (field: string) => {
     setEditableField(field);
@@ -35,7 +53,7 @@ export default function Info() {
     <div className="mx-20">
       <h1 className="py-3 text-2xl font-bold">Compte</h1>
       <Card className="w-full p-5">
-        {Object.keys(userInfo).map((field) => (
+        {Object.keys(user).map((field) => (
           <div
             key={field}
             style={{

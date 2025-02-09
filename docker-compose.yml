@@ -1,0 +1,70 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-tripshare
+    restart: always
+    environment:
+      POSTGRES_USER: fusionauth
+      POSTGRES_PASSWORD: fusionauth
+      POSTGRES_DB: fusionauth
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin-tripshare
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+  fusionauth:
+    image: fusionauth/fusionauth-app:latest
+    container_name: fusionauth-tripshare
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "9011:9011"
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/fusionauth
+      DATABASE_ROOT_USER: fusionauth
+      DATABASE_ROOT_PASSWORD: fusionauth
+      DATABASE_USER: fusionauth
+      DATABASE_PASSWORD: fusionauth
+      FUSIONAUTH_APP_MEMORY: 512M
+    volumes:
+      - fusionauth_data:/usr/local/fusionauth/data
+
+  tripshare:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextjs-tripshare
+    restart: always
+    depends_on:
+      - fusionauth
+      - postgres
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/fusionauth
+      DATABASE_USER: fusionauth
+      DATABASE_PASSWORD: fusionauth
+      FUSIONAUTH_URL: http://fusionauth:9011
+
+volumes:
+  postgres_data:
+  fusionauth_data:

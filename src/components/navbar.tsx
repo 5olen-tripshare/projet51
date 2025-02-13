@@ -19,7 +19,7 @@ export function Navbar() {
             {session && (
               <>
                 <Link
-                  href="/rental"
+                  href="/rental/info"
                   className="text-gray-600 hover:text-blue-600 transition-colors"
                 >
                   Mes annonces
@@ -32,7 +32,6 @@ export function Navbar() {
                 </Link>
               </>
             )}
-
             {session ? (
               <button
                 onClick={handleLogout}

@@ -3,9 +3,9 @@ import Image from "next/image";
 
 export function AccommodationCard(props: {
   accommodation: {
-    id: string;
+    _id: string;
     name: string;
-    location: string;
+    localisation: string;
     price: number;
     description: string;
     image: string[];
@@ -25,8 +25,8 @@ export function AccommodationCard(props: {
   const accommodation = props.accommodation;
 
   return (
-    <Link href={`/accommodations/${accommodation.id}`}>
-      <div className="bg-brown border-collapse border border-neutral-950 rounded-lg shadow-xl overflow-hidden transition-transform hover:scale-105 cursor-pointer w-full h-96">
+    <Link href={`/accommodations/${accommodation._id}`}>
+      <div className="bg-brown border-collapse border border-brown rounded-lg shadow-xl overflow-hidden transition-transform hover:scale-105 cursor-pointer w-full h-96">
         <div className="relative h-48 w-full">
           <Image
             src={accommodation.image[0]}
@@ -39,7 +39,7 @@ export function AccommodationCard(props: {
         <div className="relative p-4 h-48">
           <div className="max-h-36 overflow-hidden">
             <p className="text-lightGreen text-sm mb-1">
-              {accommodation.location}
+              {accommodation.localisation}
             </p>
             <h3 className="text-lg font-semibold text-white ">
               {accommodation.name} - {accommodation.totalPlaces} personnes

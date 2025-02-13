@@ -1,7 +1,15 @@
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 export default function Account() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/account/info");
+  }, [router]);
+
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Mon compte</h1>
-    </div>
+    <div></div>
   );
 }

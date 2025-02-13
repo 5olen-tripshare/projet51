@@ -41,47 +41,16 @@ export function AddEdit(props: {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    const userId = "60b6f7b3b3b3b30015f1b3b3";
-    const isAvailable = true;
-    const name = formData.get("name");
-    const localisation = formData.get("localisation");
-    const description = formData.get("description");
-    const price = Number(formData.get("price"));
-    const totalPlaces = Number(formData.get("totalPlaces"));
-    const squareMeter = Number(formData.get("squareMeter"));
-    const numberRoom = Number(formData.get("numberRoom"));
-    const bedRoom = Number(formData.get("bedRoom"));
-    const interests = formData.getAll("interests[]");
-    const topCriteria = formData.getAll("topCriteria[]");
-    const files = formData.getAll("file") as File[];
-    const ancienneImage = formData.getAll("ancienneImage[]");
-
-    const imagesToUpload = files.length > 0 ? files : undefined;
-
-    const data = {
-      userId,
-      isAvailable,
-      name,
-      localisation,
-      description,
-      price,
-      topCriteria,
-      interests,
-      squareMeter,
-      totalPlaces,
-      numberRoom,
-      bedRoom,
-      files: imagesToUpload,
-      ancienneImage,
-    };
+    formData.append("isAvailable", "true");
+    formData.append("userId", "67a5e07sedf96772235c36f3");
 
     try {
-      console.log("Données envoyées :", data);
+      console.log("Données envoyées :", formData);
 
       if (accommodation?._id) {
-        await updateAccommodation(accommodation._id, data);
+        await updateAccommodation(accommodation._id, formData);
       } else {
-        await createAccommodation(data);
+        await createAccommodation(formData);
       }
 
       router.push("/rental/info");
@@ -166,16 +135,20 @@ export function AddEdit(props: {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
           {image?.map((img, index) => {
+            const url_img = `http://localhost:5000/uploads/${encodeURIComponent(
+              img
+            )}`;
             return (
               <div key={index} className="relative h-48 ">
                 <button
+                  type="button"
                   className="absolute top-1 lg:-top-2 right-1 lg:-right-2 z-20 bg-red-600  text-white  rounded-full hover:bg-opacity-75"
                   onClick={() => setImage(image?.filter((c) => c !== img))}
                 >
                   <Icons.X className="h-6 w-6" />
                 </button>
                 <Image
-                  src={img}
+                  src={url_img}
                   alt={`image${index}`}
                   fill
                   className="object-cover rounded-lg"
@@ -188,7 +161,6 @@ export function AddEdit(props: {
         <div className="my-4 flex flex-row">
           <label
             htmlFor="file-upload"
-            // bg-brown btn btn-md w-48 hover:bg-orange-300 relative z-20 -mt-20 mr-4
             className="cursor-pointer bg-brown text-white py-2 px-4 rounded-lg hover:bg-orange-300"
           >
             Ajouter des images
@@ -196,7 +168,7 @@ export function AddEdit(props: {
           <input
             id="file-upload"
             type="file"
-            name="file"
+            name="files"
             className="hidden"
             multiple={true}
             onChange={(e) => {

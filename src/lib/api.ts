@@ -13,21 +13,20 @@ export const fetchAccommodationById = async (id: string) => {
   return response.json();
 };
 
-export const createAccommodation = async (data: any) => {
+export const createAccommodation = async (formData: FormData) => {
   const response = await fetch(`${API_URL}/accommodations`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    // headers: { "Content-Type": "application/json" },
+    body: formData,
   });
   if (!response.ok) throw new Error("Erreur lors de la création");
   return response.json();
 };
 
-export const updateAccommodation = async (id: string, data: any) => {
+export const updateAccommodation = async (id: string, formData: FormData) => {
   const response = await fetch(`${API_URL}/accommodations/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    method: "PUT",
+    body: formData,
   });
   if (!response.ok) throw new Error("Erreur lors de la modification");
   return response.json();

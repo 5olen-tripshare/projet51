@@ -46,14 +46,18 @@ export function AccommodationCard(props: {
     }
   };
 
+  const url_img = `http://localhost:5000/uploads/${encodeURIComponent(
+    accommodation.image[0]
+  )}`;
+
   return (
     <div className="space-y-4 p-2">
       <div className="bg-white p-6 rounded-lg shadow-md ">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="relative w-full md:w-56 h-32">
             <Image
-              src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/437582157.jpg?k=af0d3f936d81804499134f0c06d372be35d032473ef3738ad2e4917064ac7d35&o=&hp=1"
-              alt="name"
+              src={url_img}
+              alt={accommodation.name}
               fill
               className="object-cover rounded-lg"
             />

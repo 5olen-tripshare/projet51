@@ -23,13 +23,16 @@ export function AccommodationCard(props: {
   };
 }) {
   const accommodation = props.accommodation;
+  const url_img = `http://localhost:5000/uploads/${encodeURIComponent(
+    accommodation.image[0]
+  )}`;
 
   return (
     <Link href={`/accommodations/${accommodation._id}`}>
       <div className="bg-brown border-collapse border border-brown rounded-lg shadow-xl overflow-hidden transition-transform hover:scale-105 cursor-pointer w-full h-96">
         <div className="relative h-48 w-full">
           <Image
-            src={accommodation.image[0]}
+            src={url_img}
             alt={accommodation.name}
             fill
             style={{ objectFit: "cover" }}

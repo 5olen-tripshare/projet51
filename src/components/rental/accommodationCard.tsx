@@ -46,9 +46,9 @@ export function AccommodationCard(props: {
     }
   };
 
-  const url_img = `http://localhost:5000/uploads/${encodeURIComponent(
-    accommodation.image[0]
-  )}`;
+  const url_img = `http://localhost:${
+    process.env.API_ACCOMMODATION_PORT
+  }/uploads/${encodeURIComponent(accommodation.image[0])}`;
 
   return (
     <div className="space-y-4 p-2">

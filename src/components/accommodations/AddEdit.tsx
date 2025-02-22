@@ -135,9 +135,9 @@ export function AddEdit(props: {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
           {image?.map((img, index) => {
-            const url_img = `http://localhost:5000/uploads/${encodeURIComponent(
-              img
-            )}`;
+            const url_img = `http://localhost:${
+              process.env.API_ACCOMMODATION_PORT
+            }/uploads/${encodeURIComponent(img)}`;
             return (
               <div key={index} className="relative h-48 ">
                 <button

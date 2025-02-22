@@ -23,9 +23,9 @@ export function AccommodationCard(props: {
   };
 }) {
   const accommodation = props.accommodation;
-  const url_img = `http://localhost:5000/uploads/${encodeURIComponent(
-    accommodation.image[0]
-  )}`;
+  const url_img = `http://localhost:${
+    process.env.API_ACCOMMODATION_PORT
+  }/uploads/${encodeURIComponent(accommodation.image[0])}`;
 
   return (
     <Link href={`/accommodations/${accommodation._id}`}>

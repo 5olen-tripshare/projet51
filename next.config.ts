@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
-        port: "5000",
+        port: process.env.API_ACCOMMODATION_PORT,
         pathname: "/uploads/**",
       },
       {

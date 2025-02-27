@@ -1,0 +1,48 @@
+name: CI/CD with Terraform on GCP
+
+on:
+  push:
+    branches:
+      - CI/CD-P51  # Déclenche sur la branche CI/CD-P51
+
+jobs:
+  terraform:
+    name: Deploy to Google Cloud
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: latest
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GPC_CREDENTIALS }}
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Format Terraform Code
+        run: terraform fmt -check
+        continue-on-error: false
+
+      - name: Validate Terraform
+        run: terraform validate
+
+      - name: Plan Terraform changes
+        run: terraform plan -out=tfplan
+
+      - name: Require manual approval before applying changes
+        if: github.ref == 'refs/heads/CI/CD-P51'
+        run: |
+          echo "Review the Terraform Plan and approve by running: terraform apply tfplan"
+          exit 1  # Bloque l'application automatique
+
+      - name: Apply Terraform changes
+        if: github.ref == 'refs/heads/CI/CD-P51'
+        run: terraform apply -auto-approve tfplan

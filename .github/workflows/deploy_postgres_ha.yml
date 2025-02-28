@@ -25,13 +25,20 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y trivy
 
+          
       - name: Install Kube-score
         run: |
           curl -sSL -o kube-score https://github.com/zegl/kube-score/releases/latest/download/kube-score-linux-amd64
+          
+          # Vérification du fichier téléchargé
+          file kube-score
+          ls -lh kube-score
+          
           chmod +x kube-score
           sudo mv kube-score /usr/local/bin/
+          
+          # Vérification que kube-score est bien installé
           /usr/local/bin/kube-score version
-
 
 
   terraform-apply:

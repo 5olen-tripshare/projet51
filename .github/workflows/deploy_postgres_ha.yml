@@ -28,17 +28,13 @@ jobs:
           
       - name: Install Kube-score
         run: |
-          curl -sSL -o kube-score https://github.com/zegl/kube-score/releases/latest/download/kube-score-linux-amd64
+          sudo apt update && sudo apt install -y golang
+          go install github.com/zegl/kube-score/cmd/kube-score@latest
+          sudo mv ~/go/bin/kube-score /usr/local/bin/
           
-          # Vérification du fichier téléchargé
-          file kube-score
-          ls -lh kube-score
-          
-          chmod +x kube-score
-          sudo mv kube-score /usr/local/bin/
-          
-          # Vérification que kube-score est bien installé
-          /usr/local/bin/kube-score version
+          # Vérification finale
+          kube-score version
+
 
 
   terraform-apply:

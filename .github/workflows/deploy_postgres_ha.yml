@@ -27,10 +27,11 @@ jobs:
 
       - name: Install Kube-score
         run: |
-          curl -LO https://github.com/zegl/kube-score/releases/latest/download/kube-score-linux-amd64
-          chmod +x kube-score-linux-amd64
-          sudo mv kube-score-linux-amd64 /usr/local/bin/kube-score
-          kube-score version
+          curl -sSL -o kube-score https://github.com/zegl/kube-score/releases/latest/download/kube-score-linux-amd64
+          chmod +x kube-score
+          sudo mv kube-score /usr/local/bin/
+          /usr/local/bin/kube-score version
+
 
 
   terraform-apply:

@@ -1,4 +1,3 @@
 provider "kubernetes" {
-  config_path    = pathexpand("~/.kube/config")
-  config_context = "default"
+  config_path = pathexpand("~/.kube/config")
 }

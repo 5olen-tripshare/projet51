@@ -56,7 +56,7 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        working-directory: terraform
+        working-directory: Terraform
         env:
           KUBE_CONFIG_PATH: ${{ secrets.KUBECONFIG }}
 

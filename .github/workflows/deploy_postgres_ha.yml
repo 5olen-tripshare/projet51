@@ -35,12 +35,12 @@ jobs:
           # Vérification finale
           kube-score version
 
-Kubeconfig:
-name: Configurer Kubeconfig
-  run: |
-    mkdir -p ~/.kube
-    echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
-    chmod 600 ~/.kube/config
+          Kubeconfig:
+      - name: Configurer Kubeconfig
+        run: |
+              mkdir -p ~/.kube
+              echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+              chmod 600 ~/.kube/config
 
 
   terraform-apply:

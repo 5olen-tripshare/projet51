@@ -25,23 +25,19 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y trivy
 
-          
       - name: Install Kube-score
         run: |
           sudo apt update && sudo apt install -y golang
           go install github.com/zegl/kube-score/cmd/kube-score@latest
           sudo mv ~/go/bin/kube-score /usr/local/bin/
-          
           # Vérification finale
           kube-score version
 
-          Kubeconfig:
       - name: Configurer Kubeconfig
         run: |
-              mkdir -p ~/.kube
-              echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
-              chmod 600 ~/.kube/config
-
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
 
   terraform-apply:
     name: Terraform Apply
@@ -50,6 +46,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Configurer Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -63,8 +65,6 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: Terraform
-        env:
-          KUBE_CONFIG_PATH: ${{ secrets.KUBECONFIG }}
 
   deploy-kubernetes:
     name: Deploy PostgreSQL to K3s
@@ -73,6 +73,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Configurer Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
 
       - name: Setup Kubectl
         uses: azure/setup-kubectl@v3
@@ -83,12 +89,8 @@ jobs:
         run: |
           kubectl apply -f manifests/
           kubectl rollout status statefulset/patroni -n postgres-ha
-        env:
-          KUBE_CONFIG_PATH: ${{ secrets.KUBECONFIG }}
 
       - name: Verify Deployment
         run: |
           kubectl get pods -n postgres-ha
           kubectl exec -it -n postgres-ha patroni-0 -- patronictl list
-        env:
-          KUBE_CONFIG_PATH: ${{ secrets.KUBECONFIG }}

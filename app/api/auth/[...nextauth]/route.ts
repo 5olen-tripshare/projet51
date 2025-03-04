@@ -46,7 +46,6 @@ export const authOptions = {
         mobilePhone: token.mobilePhone || null,
         image: token.image || null,
       };
-      console.log("Session :", session);
       return session;
     },
     async jwt({ token, user }: { token: any, user?: any }) {
@@ -58,7 +57,6 @@ export const authOptions = {
         token.birthdate = user.birthdate || null;
         token.mobilePhone = user.mobilePhone || null;
       }
-      console.log("Token :", token);
       return token;
     }
   },

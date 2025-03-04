@@ -44,9 +44,7 @@ export default function Home() {
     if (!userId) return;
 
     const loadInterests = async () => {
-      console.log("🔄 Chargement des intérêts pour :", userId);
       const interests = await fetchUserInterests(userId);
-      console.log("📌 Intérêts récupérés :", interests);
       setUserInterests(interests);
       setLoading(false);
     };
@@ -64,7 +62,6 @@ export default function Home() {
   }, []);
 
   if (status === "loading") return <p>Chargement...</p>;
-  if (!userId) return <p>Veuillez vous connecter.</p>;
 
   const itemsPerPage = 12;
   const totalPages = Math.ceil(accommodations.length / itemsPerPage);
@@ -156,9 +153,11 @@ export default function Home() {
         </button>
       </div>
 
-      <div style={{ marginTop: "20px" }}>
-        <Recommendations userId={userId} userInterests={userInterests} />
-      </div>
+      {userId && (
+        <div style={{ marginTop: "20px" }}>
+          <Recommendations userId={userId} userInterests={userInterests} />
+        </div>
+      )}
     </div>
   );
 }

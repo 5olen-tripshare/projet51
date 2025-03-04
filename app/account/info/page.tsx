@@ -7,8 +7,6 @@ import UserInterests from "@/src/components/userInterests/UserInterests";
 export default function Info() {
   const { data: session } = useSession();
 
-  console.log("Session utilisateur créée :", session);
-
   const defaultUserInfo = {
     nomComplet: "Nom non disponible",
     email: "Email non disponible",
@@ -17,8 +15,7 @@ export default function Info() {
   };
 
   const userId = session?.user?.id || "";
-  const [userInterests, setUserInterests] = useState([]);
-
+  const [userInterests, setUserInterests] = useState<string[]>([]);
   const [user, setUser] = useState(defaultUserInfo);
 
   // Synchronisation de l'état avec la session

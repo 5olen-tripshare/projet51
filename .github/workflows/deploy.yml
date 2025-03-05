@@ -12,9 +12,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Terraform Destroy (Reset Infra)
-        run: terraform destroy -auto-approve
-        working-directory: Terraform
+
 
       - name: Terraform Apply (Retry)
         run: terraform apply -auto-approve

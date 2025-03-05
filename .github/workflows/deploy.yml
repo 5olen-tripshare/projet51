@@ -15,6 +15,11 @@ jobs:
         with:
           ref: CI/CD-P51  # S'assure que la bonne branche est utilisée
 
+      - name: Tester SSH manuellement
+        run: |
+            ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no dakinizar46@10.0.0.9 "echo 'Connexion SSH OK sur k3s-master'"
+
+
       - name: Configurer SSH pour Ansible
         run: |
           mkdir -p ~/.ssh

@@ -15,14 +15,18 @@ jobs:
         with:
           ref: CI/CD-P51  # S'assure que la bonne branche est utilisée
 
-      - name: Tester la connectivité réseau
+      - name: Configurer SSH pour Ansible via Proxy
         run: |
-          ping -c 4 10.0.0.9 || echo "Impossible d'atteindre 10.0.0.9"
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 104.199.0.139 >> ~/.ssh/known_hosts
+
+      - name: Tester SSH via k3s-proxy
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 dakinizar46@104.199.0.139 "echo 'Connexion SSH OK via k3s-proxy'"
 
 
-      - name: Tester SSH manuellement
-        run: |
-            ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 dakinizar46@10.0.0.9 "echo 'Connexion SSH OK sur k3s-master'"
 
 
       - name: Configurer SSH pour Ansible

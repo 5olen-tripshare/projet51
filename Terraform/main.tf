@@ -1,49 +1,116 @@
-
-
-resource "kubernetes_namespace" "postgres_ha" {
-  metadata {
-    name = "postgres-ha"
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 4.0"
+    }
   }
 }
 
-resource "kubernetes_stateful_set" "etcd" {
-  metadata {
-    name      = "etcd"
-    namespace = kubernetes_namespace.postgres_ha.metadata[0].name
+provider "google" {
+  credentials = file(var.gcp_credentials)
+  project     = var.gcp_project
+  region      = var.gcp_region
+}
+
+# 🔹 Créer un réseau VPC
+resource "google_compute_network" "vpc_network" {
+  name                    = "k3s-network"
+  auto_create_subnetworks = true
+}
+
+# 🔹 Règle firewall pour autoriser le trafic SSH et API K3s
+resource "google_compute_firewall" "allow_ssh_k3s" {
+  name    = "allow-ssh-k3s"
+  network = google_compute_network.vpc_network.name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22", "6443"]
   }
-  spec {
-    service_name = "etcd"
-    replicas     = 1
-    selector {
-      match_labels = {
-        app = "etcd"
-      }
+
+  source_ranges = ["0.0.0.0/0"]
+}
+
+# 🔹 Définition des instances (VMs)
+resource "google_compute_instance" "k3s_master" {
+  name         = "k3s-master"
+  machine_type = "e2-medium"
+  zone         = var.gcp_zone
+
+  boot_disk {
+    initialize_params {
+      image = var.os_image
     }
-    template {
-      metadata {
-        labels = {
-          app = "etcd"
-        }
-      }
-      spec {
-        node_selector = {
-          "kubernetes.io/hostname" = "k3s-master"
-        }
-        container {
-          name  = "etcd"
-          image = "quay.io/coreos/etcd:v3.5.0"
-          command = [
-            "etcd",
-            "--name", "etcd",
-            "--data-dir", "/var/lib/etcd",
-            "--listen-client-urls", "http://0.0.0.0:2379",
-            "--advertise-client-urls", "http://etcd:2379",
-            "--listen-peer-urls", "http://0.0.0.0:2380",
-            "--initial-advertise-peer-urls", "http://etcd:2380",
-            "--initial-cluster", "etcd=http://etcd:2380"
-          ]
-        }
-      }
+  }
+
+  network_interface {
+    network = google_compute_network.vpc_network.name
+    access_config {} # Pour obtenir une IP publique (peut être supprimé)
+  }
+
+  metadata = {
+    ssh-keys = "${var.ssh_user}:${file(var.ssh_public_key)}"
+  }
+}
+
+resource "google_compute_instance" "k3s_node_0" {
+  name         = "k3s-node-0"
+  machine_type = "e2-medium"
+  zone         = var.gcp_zone
+
+  boot_disk {
+    initialize_params {
+      image = var.os_image
     }
+  }
+
+  network_interface {
+    network = google_compute_network.vpc_network.name
+  }
+
+  metadata = {
+    ssh-keys = "${var.ssh_user}:${file(var.ssh_public_key)}"
+  }
+}
+
+resource "google_compute_instance" "k3s_node_1" {
+  name         = "k3s-node-1"
+  machine_type = "e2-medium"
+  zone         = var.gcp_zone
+
+  boot_disk {
+    initialize_params {
+      image = var.os_image
+    }
+  }
+
+  network_interface {
+    network = google_compute_network.vpc_network.name
+  }
+
+  metadata = {
+    ssh-keys = "${var.ssh_user}:${file(var.ssh_public_key)}"
+  }
+}
+
+resource "google_compute_instance" "k3s_proxy" {
+  name         = "k3s-proxy"
+  machine_type = "e2-small"
+  zone         = var.gcp_zone
+
+  boot_disk {
+    initialize_params {
+      image = var.os_image
+    }
+  }
+
+  network_interface {
+    network = google_compute_network.vpc_network.name
+    access_config {} # Ajoute une IP publique
+  }
+
+  metadata = {
+    ssh-keys = "${var.ssh_user}:${file(var.ssh_public_key)}"
   }
 }

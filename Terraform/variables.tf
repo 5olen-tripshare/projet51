@@ -4,7 +4,7 @@ variable "gcp_credentials" {
 }
 
 variable "gcp_project" {
-  description = "Nom du projet GCP"
+  description = "TripShare-P51"
   type        = string
 }
 

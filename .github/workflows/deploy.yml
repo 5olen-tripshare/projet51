@@ -36,16 +36,11 @@ jobs:
 
       - name: Terraform Apply
         run: |
-          # Corriger les retours à la ligne et écrire la clé JSON
-          echo '${{ secrets.GCP_CREDENTIALS }}' | base64 --decode > gcp-key.json
-          
-          # Exécuter Terraform avec le bon chemin vers la clé
           terraform apply -auto-approve -input=false \
-            -var="gcp_credentials=$(pwd)/gcp-key.json" \
-            -var="gcp_project=${{ secrets.GCP_PROJECT }}"
+            -var='gcp_credentials=${{ secrets.GCP_CREDENTIALS }}' \
+            -var='gcp_project=${{ secrets.GCP_PROJECT }}'
         working-directory: Terraform
-
-
+        
 
   configure-vms:
     needs: terraform-apply

@@ -1,5 +1,5 @@
 variable "gcp_credentials" {
-  description = "Fichier JSON des identifiants Google Cloud"
+  description = "Clé JSON des identifiants Google Cloud"
   type        = string
 }
 
@@ -7,6 +7,7 @@ variable "gcp_project" {
   description = "Nom du projet GCP"
   type        = string
 }
+
 
 variable "gcp_region" {
   description = "Région GCP"

@@ -35,7 +35,14 @@ jobs:
         working-directory: Terraform
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false -var="gcp_credentials=${{ secrets.GCP_CREDENTIALS }}" -var="gcp_project=${{ secrets.GCP_PROJECT }}"
+        run: |
+          # Écrire la clé JSON dans un fichier temporaire
+          echo "${{ secrets.GCP_CREDENTIALS }}" > gcp-key.json
+          
+          # Exécuter Terraform en passant les variables correctement
+          terraform apply -auto-approve -input=false \
+            -var="gcp_credentials=gcp-key.json" \
+            -var="gcp_project=${{ secrets.GCP_PROJECT }}"
         working-directory: Terraform
 
 

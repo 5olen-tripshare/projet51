@@ -3,7 +3,7 @@ name: Deploy Infrastructure & Configure VMs
 on:
   push:
     branches:
-      - main
+      - CI/CD-P51
 
 jobs:
   terraform-apply:
@@ -11,6 +11,11 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+
+      - name: Reset Terraform cache
+        run: rm -rf .terraform
+        working-directory: Terraform
+
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2

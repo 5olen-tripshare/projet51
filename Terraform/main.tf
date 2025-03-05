@@ -7,11 +7,7 @@ terraform {
   }
 }
 
-provider "google" {
-  credentials = file(var.gcp_credentials)
-  project     = var.gcp_project
-  region      = var.gcp_region
-}
+
 
 # 🔹 Créer un réseau VPC
 resource "google_compute_network" "vpc_network" {

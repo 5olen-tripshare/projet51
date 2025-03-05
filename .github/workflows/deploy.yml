@@ -1,0 +1,39 @@
+name: Deploy Infrastructure & Configure VMs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform-apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.3.7
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: terraform
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: terraform
+
+  configure-vms:
+    needs: terraform-apply
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Installer Ansible
+        run: sudo apt update && sudo apt install -y ansible
+
+      - name: Lancer la configuration Ansible
+        run: ansible-playbook -i ansible/inventory.ini ansible/setup.yml

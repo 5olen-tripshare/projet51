@@ -17,7 +17,7 @@ jobs:
 
       - name: Tester SSH manuellement
         run: |
-            ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no dakinizar46@10.0.0.9 "echo 'Connexion SSH OK sur k3s-master'"
+            ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 dakinizar46@10.0.0.9 "echo 'Connexion SSH OK sur k3s-master'"
 
 
       - name: Configurer SSH pour Ansible

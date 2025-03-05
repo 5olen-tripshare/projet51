@@ -15,6 +15,11 @@ jobs:
         with:
           ref: CI/CD-P51  # S'assure que la bonne branche est utilisée
 
+      - name: Tester la connectivité réseau
+        run: |
+          ping -c 4 10.0.0.9 || echo "Impossible d'atteindre 10.0.0.9"
+
+
       - name: Tester SSH manuellement
         run: |
             ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 dakinizar46@10.0.0.9 "echo 'Connexion SSH OK sur k3s-master'"

@@ -35,8 +35,9 @@ jobs:
         working-directory: Terraform
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false
+        run: terraform apply -auto-approve -input=false -var="gcp_credentials=${{ secrets.GCP_CREDENTIALS }}" -var="gcp_project=${{ secrets.GCP_PROJECT }}"
         working-directory: Terraform
+
 
   configure-vms:
     needs: terraform-apply

@@ -15,6 +15,13 @@ jobs:
       - name: Reset Terraform cache
         run: rm -rf .terraform
         working-directory: Terraform
+        
+      - name: Tester connexion SSH et API K3s
+        run: |
+          nc -zv $(terraform output -raw k3s_master_internal_ip) 22 || echo "SSH Bloqué"
+          nc -zv $(terraform output -raw k3s_proxy_public_ip) 6443 || echo "API K3s Bloquée"
+        working-directory: Terraform
+
 
 
       - name: Setup Terraform

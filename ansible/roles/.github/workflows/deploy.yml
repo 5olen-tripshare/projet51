@@ -1,1 +1,39 @@
+name: Deploy PostgreSQL HA
+
+on:
+  push:
+    branches:
+      - CI/CD-P51  #Spécifie la branche que tu utilises
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: CI/CD-P51  # S'assure que la bonne branche est utilisée
+
+      - name: Configurer SSH pour Ansible
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 10.0.0.9 10.0.0.8 10.0.0.7 10.0.0.6 >> ~/.ssh/known_hosts
+
+      - name: Installer Ansible
+        run: sudo yum install -y ansible
+
+      - name: Tester la connexion SSH avec Ansible
+        run: |
+          ansible all -i ansible/inventory.ini -m ping
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
+
+      - name: Déployer PostgreSQL HA avec Ansible
+        run: |
+          ansible-playbook -i ansible/inventory.ini ansible/setup.yml
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
 

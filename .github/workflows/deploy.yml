@@ -45,7 +45,7 @@ jobs:
 
 
       - name: Installer Ansible
-        run: sudo yum install -y ansible
+        run: sudo dnf install -y ansible
 
       - name: Tester la connexion SSH avec Ansible
         run: |

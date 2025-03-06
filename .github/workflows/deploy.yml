@@ -44,16 +44,6 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 dakinizar46@104.199.0.139 "echo 'Connexion SSH OK via k3s-proxy'"
 
 
-
-      - name: Configurer SSH pour Ansible
-        run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          echo -e "${{ secrets.SSH_PRIVATE_KEY_PROXY }}" | sed 's/\r$//' > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 10.0.0.9 10.0.0.8 10.0.0.7 10.0.0.6 >> ~/.ssh/known_hosts
-
-
       - name: Installer Ansible
         run: sudo yum install -y ansible
 

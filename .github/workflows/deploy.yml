@@ -47,6 +47,11 @@ jobs:
       - name: Installer Ansible
         run: sudo apt install -y ansible
 
+
+      - name: Vérifier la connectivité avec k3s-proxy
+        run: ping -c 4 104.199.0.139 || echo "Impossible d'atteindre k3s-proxy"
+
+
       - name: Tester la connexion SSH avec Ansible
         run: |
           ansible all -i ansible/inventory.ini -m ping

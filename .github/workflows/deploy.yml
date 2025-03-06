@@ -15,6 +15,13 @@ jobs:
         with:
           ref: CI/CD-P51  # S'assure que la bonne branche est utilisée
 
+      - name: Configurer SSH pour Ansible via Proxy
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY_PROXY }}" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 104.199.0.139 >> ~/.ssh/known_hosts
+
       - name: Vérifier l'existence et les permissions de la clé SSH
         run: |
           ls -lah ~/.ssh/

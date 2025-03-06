@@ -15,6 +15,10 @@ jobs:
         with:
           ref: CI/CD-P51  # S'assure que la bonne branche est utilisée
 
+      - name: Vérifier l'existence et les permissions de la clé SSH
+        run: |
+          ls -lah ~/.ssh/
+          cat ~/.ssh/id_rsa || echo "La clé SSH privée n'est PAS présente !"
 
       - name: Tester SSH via k3s-proxy
         run: |

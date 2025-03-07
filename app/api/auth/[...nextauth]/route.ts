@@ -8,20 +8,20 @@ export const authOptions = {
       name: "FusionAuth",
       clientId: process.env.NEXT_PUBLIC_FUSIONAUTH_CLIENT_ID!,
       clientSecret: process.env.FUSIONAUTH_CLIENT_SECRET!,
-      issuer: process.env.FUSIONAUTH_ISSUER!,
+      issuer: process.env.NEXT_PUBLIC_FUSIONAUTH_ISSUER!,
       authorization: {
-        url: `${process.env.FUSIONAUTH_ISSUER}/oauth2/authorize`,
+        url: `${process.env.NEXT_PUBLIC_FUSIONAUTH_ISSUER}/oauth2/authorize`,
         params: {
           scope: "openid profile email address phone",
           response_type: "code",
-          redirect_uri: "http://localhost:3000/api/auth/callback/fusionauth",
+          redirect_uri: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/auth/callback/fusionauth`,
         },
       },
       token: {
-        url: `${process.env.FUSIONAUTH_ISSUER}/oauth2/token`,
+        url: `${process.env.NEXT_PUBLIC_FUSIONAUTH_ISSUER}/oauth2/token`,
       },
       userinfo: {
-        url: `${process.env.FUSIONAUTH_ISSUER}/oauth2/userinfo`,
+        url: `${process.env.NEXT_PUBLIC_FUSIONAUTH_ISSUER}/oauth2/userinfo`,
       },
       profile(profile) {
         return {

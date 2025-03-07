@@ -1,4 +1,4 @@
-export const API_URL = process.env.NEXT_PUBLIC_GATEWAY_API_URL;
+export const API_URL = process.env.NEXT_PUBLIC_GATEWAY_API_URL + "/api";
 
 export const countTransactionByAccommodationId = async (id: string) => {
   const response = await fetch(

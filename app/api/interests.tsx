@@ -1,14 +1,15 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_URL = process.env.NEXT_PUBLIC_GATEWAY_API_URL;
 
 // 🔹 Fonction pour récupérer les intérêts de l'utilisateur
 export const fetchUserInterests = async (userId: string): Promise<string[]> => {
   try {
     const response = await fetch(`${API_URL}/interests/${userId}`);
-    
-    if (!response.ok) throw new Error("Erreur lors de la récupération des intérêts");
+
+    if (!response.ok)
+      throw new Error("Erreur lors de la récupération des intérêts");
 
     const data: { interests: string[] } = await response.json();
-    
+
     return data.interests;
   } catch (error) {
     console.error("Erreur API :", error);
@@ -17,7 +18,10 @@ export const fetchUserInterests = async (userId: string): Promise<string[]> => {
 };
 
 // 🔹 Fonction pour sauvegarder les intérêts de l'utilisateur
-export const saveUserInterests = async (userId: string, interests: string[]): Promise<void> => {
+export const saveUserInterests = async (
+  userId: string,
+  interests: string[]
+): Promise<void> => {
   try {
     const response = await fetch(`${API_URL}/interests/${userId}`, {
       method: "POST",
@@ -25,7 +29,8 @@ export const saveUserInterests = async (userId: string, interests: string[]): Pr
       body: JSON.stringify({ user_id: userId, interests }),
     });
 
-    if (!response.ok) throw new Error("Erreur lors de l'enregistrement des intérêts");
+    if (!response.ok)
+      throw new Error("Erreur lors de l'enregistrement des intérêts");
 
     await response.json();
   } catch (error) {

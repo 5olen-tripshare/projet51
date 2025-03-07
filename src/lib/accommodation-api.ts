@@ -1,4 +1,4 @@
-export const API_URL = process.env.NEXT_PUBLIC_GATEWAY_API_URL;
+export const API_URL = process.env.NEXT_PUBLIC_GATEWAY_API_URL + "/api";
 
 export const fetchAccommodations = async () => {
   const response = await fetch(`${API_URL}/accommodations`);

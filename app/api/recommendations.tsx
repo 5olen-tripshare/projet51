@@ -19,11 +19,15 @@ export type Accommodation = {
   bedRoom: number;
 };
 
+const API_URL = process.env.NEXT_PUBLIC_GATEWAY_API_URL;
+
 // 🔹 Fonction pour récupérer les recommandations avec typage
-export const fetchRecommendations = async (userId: string): Promise<Accommodation[]> => {
+export const fetchRecommendations = async (
+  userId: string
+): Promise<Accommodation[]> => {
   try {
-    const response = await fetch(`http://localhost:8000/recommend/${userId}`);
-    
+    const response = await fetch(`${API_URL}/recommend/${userId}`);
+
     if (!response.ok) {
       throw new Error("Erreur lors de la récupération des recommandations");
     }

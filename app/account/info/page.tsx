@@ -2,20 +2,20 @@
 import { Card } from "@/src/components/ui/card";
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import UserInterests from "@/src/components/userInterests/UserInterests";
 
 export default function Info() {
   const { data: session } = useSession();
-
-  console.log("Session utilisateur créée :", session);
 
   const defaultUserInfo = {
     nomComplet: "Nom non disponible",
     email: "Email non disponible",
     telephone: "Téléphone non disponible",
     dateDeNaissance: "Date de naissance non disponible",
-    interets: "Intérêts non disponibles",
   };
 
+  const userId = session?.user?.id || "";
+  const [userInterests, setUserInterests] = useState<string[]>([]);
   const [user, setUser] = useState(defaultUserInfo);
 
   // Synchronisation de l'état avec la session
@@ -27,7 +27,6 @@ export default function Info() {
         email: session.user.email || prevUser.email,
         telephone: session.user.mobilePhone || prevUser.telephone,
         dateDeNaissance: session.user.birthdate || prevUser.dateDeNaissance,
-        interets: session.user.interests || prevUser.interets,
       }));
     }
   }, [session]);
@@ -99,6 +98,7 @@ export default function Info() {
             </button>
           </div>
         ))}
+        <UserInterests userId={userId} onUpdateInterests={setUserInterests} />
       </Card>
     </div>
   );

@@ -1,10 +1,12 @@
 "use client";
 import { AccommodationCard } from "@/src/components/accommodations/accommodationCard";
-import accommodationsData from "@/src/data/accommodations.json";
 import Image from "next/image";
 import { MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
 import { fetchAccommodations } from "@/src/lib/accommodation-api";
+import Recommendations from "@/src/components/recommendations/Recommendations";
+import { fetchUserInterests } from "@/app/api/interests";
+import { useSession } from "next-auth/react";
 
 type Accommodation = {
   _id: string;
@@ -27,10 +29,29 @@ type Accommodation = {
 };
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id || null;
+
   const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
-  const [accommodationsData, setAccommodationsData] = useState<Accommodation[]>(
-    []
-  );
+  const [userInterests, setUserInterests] = useState<string[]>([]);
+  // const [loading, setLoading] = useState(true);
+  const [destination, setDestination] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const loadInterests = async () => {
+      const interests = await fetchUserInterests(userId);
+      setUserInterests(interests);
+      // setLoading(false);
+    };
+
+    loadInterests();
+  }, [userId]);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,7 +59,6 @@ export default function Home() {
       try {
         const data = await fetchAccommodations();
         console.log(data);
-        setAccommodationsData(data);
         setAccommodations(data);
       } catch (error) {
         console.error(
@@ -52,15 +72,10 @@ export default function Home() {
     loadAccommodations();
   }, []);
 
-  const [destination, setDestination] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  // if (status === "loading") return <p>Chargement...</p>;
 
-  // Pagination
   const itemsPerPage = 12;
-  const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(accommodations.length / itemsPerPage);
-
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentData = accommodations.slice(startIndex, endIndex);
@@ -75,33 +90,20 @@ export default function Home() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const destination = formData.get("destination");
-    const startDate = formData.get("startDate");
-    const endDate = formData.get("endDate");
+    const formData = new FormData(e.currentTarget);
+    const destination = formData.get("destination") as string;
+    // const startDate = formData.get("startDate") as string;
+    // const endDate = formData.get("endDate") as string;
 
-    const data = {
-      destination,
-      startDate,
-      endDate,
-    };
-    console.log(data);
-
-    const filteredAccommodations = accommodationsData.filter((acc) => {
+    const filteredAccommodations = accommodations.filter((acc) => {
       if (!acc.isAvailable) return false;
 
       // !!!!!!!! A FAIRE !!!!!!!!
       // ajouter les conditions des dates par rapport à la disponibilité
 
-      if (
-        !acc.localisation
-          .toLowerCase()
-          .includes(String(destination)?.toLowerCase())
-      ) {
+      if (!acc.localisation.toLowerCase().includes(destination.toLowerCase())) {
         return false;
       }
-
       return true;
     });
 
@@ -132,9 +134,7 @@ export default function Home() {
 
       <div className="relative z-20 -mt-8 flex justify-center">
         <form
-          onSubmit={(e) => {
-            handleSubmit(e);
-          }}
+          onSubmit={handleSubmit}
           method="post"
           className="bg-white p-2 rounded-lg shadow-lg max-w-6xl w-full"
         >
@@ -156,8 +156,6 @@ export default function Home() {
                 name="startDate"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                id="startDate"
-                className="grow"
               />
             </label>
             <label className="input input-bordered flex items-center gap-2">
@@ -166,8 +164,6 @@ export default function Home() {
                 name="endDate"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                id="endDate"
-                className="grow"
               />
             </label>
             <button
@@ -180,7 +176,7 @@ export default function Home() {
         </form>
       </div>
 
-      <div className="grid grid-cols-1  md:grid-cols-2  xl:grid-cols-3 gap-6 pt-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pt-16">
         {loading ? (
           <span className="loading loading-dots loading-xl"></span>
         ) : (
@@ -192,6 +188,7 @@ export default function Home() {
           ))
         )}
       </div>
+
       <div style={{ marginTop: "20px" }}>
         <button
           onClick={handlePrevious}
@@ -211,6 +208,12 @@ export default function Home() {
           Suivant
         </button>
       </div>
+
+      {userId && (
+        <div style={{ marginTop: "20px" }}>
+          <Recommendations userId={userId} userInterests={userInterests} />
+        </div>
+      )}
     </div>
   );
 }

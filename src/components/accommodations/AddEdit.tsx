@@ -6,8 +6,12 @@ import listInterests from "@/src/data/interests.json";
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
-import { createAccommodation, updateAccommodation } from "@/src/lib/api";
+import {
+  createAccommodation,
+  updateAccommodation,
+} from "@/src/lib/accommodation-api";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export function AddEdit(props: {
   accommodation?: {
@@ -32,6 +36,9 @@ export function AddEdit(props: {
 }) {
   const router = useRouter();
 
+  const { data: session } = useSession();
+  const token = session?.user?.accessToken;
+
   function getIconComponent(iconName: string) {
     return Icons[iconName as keyof typeof Icons] as React.ElementType;
   }
@@ -48,9 +55,9 @@ export function AddEdit(props: {
       console.log("Données envoyées :", formData);
 
       if (accommodation?._id) {
-        await updateAccommodation(accommodation._id, formData);
+        await updateAccommodation(token, accommodation._id, formData);
       } else {
-        await createAccommodation(formData);
+        await createAccommodation(token, formData);
       }
 
       router.push("/rental/info");
@@ -135,9 +142,9 @@ export function AddEdit(props: {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
           {image?.map((img, index) => {
-            const url_img = `http://localhost:${
-              process.env.API_ACCOMMODATION_PORT
-            }/uploads/${encodeURIComponent(img)}`;
+            const url_img = `${
+              process.env.NEXT_PUBLIC_IMAGE_URI
+            }/${encodeURIComponent(img)}`;
             return (
               <div key={index} className="relative h-48 ">
                 <button

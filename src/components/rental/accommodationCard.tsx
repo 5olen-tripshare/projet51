@@ -46,9 +46,9 @@ export function AccommodationCard(props: {
     }
   };
 
-  const url_img = `http://localhost:${
-    process.env.API_ACCOMMODATION_PORT
-  }/uploads/${encodeURIComponent(accommodation.image[0])}`;
+  const url_img = `${process.env.NEXT_PUBLIC_IMAGE_URI}/${encodeURIComponent(
+    accommodation.image[0]
+  )}`;
 
   return (
     <div className="space-y-4 p-2">
@@ -68,8 +68,8 @@ export function AccommodationCard(props: {
               <div>
                 <h3 className="font-semibold text-lg">{accommodation.name}</h3>
                 <p className="text-gray-600">{accommodation.localisation}</p>
-                <p className="mt-2">
-                  Du {"2024-08-15"} au {"2024-08-22"}
+                <p className="mt-2 overflow-hidden">
+                  {accommodation.description}
                 </p>
               </div>
               <div className="text-right">

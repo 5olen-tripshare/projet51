@@ -1,5 +1,5 @@
 import { AddEdit } from "@/src/components/accommodations/AddEdit";
-import { fetchAccommodationById } from "@/src/lib/api";
+import { fetchAccommodationById } from "@/src/lib/accommodation-api";
 
 export default async function EditAccommodation(props: {
   params: {

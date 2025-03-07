@@ -37,32 +37,43 @@ export const authOptions = {
       },
     }),
   ],
-  session: { strategy: 'jwt' as const },
+  session: { strategy: "jwt" as const },
   callbacks: {
-    async session({ session, token }: { session: any, token: any }) {
+    async session({ session, token }: { session: any; token: any }) {
       session.user = {
+        id: token.id,
         name: token.name || null,
         email: token.email || null,
         birthdate: token.birthdate || null,
         mobilePhone: token.mobilePhone || null,
         image: token.image || null,
-        interests: token.interests || null,
+        accessToken: token.accessToken || null,
       };
       console.log("Session :", session);
       return session;
     },
-    async jwt({ token, user }: { token: any, user?: any }) {
+    async jwt({
+      token,
+      user,
+      account,
+    }: {
+      token: any;
+      user?: any;
+      account?: any;
+    }) {
+      if (account) {
+        token.accessToken = account.access_token;
+      }
       if (user) {
+        token.id = user.id;
         token.name = user.name || null;
         token.email = user.email || null;
         token.image = user.image || null;
         token.birthdate = user.birthdate || null;
         token.mobilePhone = user.mobilePhone || null;
-        token.interests = user.interests || null;
       }
-      console.log("Token :", token);
       return token;
-    }
+    },
   },
 };
 

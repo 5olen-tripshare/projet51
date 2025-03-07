@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
-        port: process.env.API_ACCOMMODATION_PORT,
+        port: process.env.NEXT_PUBLIC_IMAGE_PORT,
         pathname: "/uploads/**",
       },
       {

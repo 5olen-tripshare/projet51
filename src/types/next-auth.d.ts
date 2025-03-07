@@ -9,6 +9,7 @@ declare module "next-auth" {
       mobilePhone?: string | null;
       image?: string | null;
       interests?: string;
+      accessToken?: string;
     };
   }
 }

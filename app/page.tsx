@@ -4,7 +4,7 @@ import accommodationsData from "@/src/data/accommodations.json";
 import Image from "next/image";
 import { MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
-import { fetchAccommodations } from "@/src/lib/api";
+import { fetchAccommodations } from "@/src/lib/accommodation-api";
 
 type Accommodation = {
   _id: string;
@@ -31,13 +31,23 @@ export default function Home() {
   const [accommodationsData, setAccommodationsData] = useState<Accommodation[]>(
     []
   );
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadAccommodations() {
-      const data = await fetchAccommodations();
-      console.log(data);
-      setAccommodationsData(data);
-      setAccommodations(data);
+      try {
+        const data = await fetchAccommodations();
+        console.log(data);
+        setAccommodationsData(data);
+        setAccommodations(data);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des hébergements :",
+          error
+        );
+      } finally {
+        setLoading(false);
+      }
     }
     loadAccommodations();
   }, []);
@@ -171,12 +181,16 @@ export default function Home() {
       </div>
 
       <div className="grid grid-cols-1  md:grid-cols-2  xl:grid-cols-3 gap-6 pt-16">
-        {currentData.map((accommodation) => (
-          <AccommodationCard
-            key={accommodation._id}
-            accommodation={accommodation}
-          />
-        ))}
+        {loading ? (
+          <span className="loading loading-dots loading-xl"></span>
+        ) : (
+          currentData.map((accommodation) => (
+            <AccommodationCard
+              key={accommodation._id}
+              accommodation={accommodation}
+            />
+          ))
+        )}
       </div>
       <div style={{ marginTop: "20px" }}>
         <button

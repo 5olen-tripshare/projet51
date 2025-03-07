@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { AccommodationCard } from "@/src/components/rental/accommodationCard";
 import { useState, useEffect } from "react";
-import { fetchAccommodations } from "@/src/lib/api";
+import { fetchAccommodations } from "@/src/lib/accommodation-api";
 
 type Accommodation = {
   _id: string;

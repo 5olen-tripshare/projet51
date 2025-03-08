@@ -132,7 +132,9 @@ export default function AccommodationDetailClient({ accommodation }: Props) {
 
             <div className="relative h-96">
               <Image
-                src={accommodation.image[currentImageIndex]}
+                src={`${process.env.NEXT_PUBLIC_IMAGE_URI}/${encodeURIComponent(
+                  accommodation.image[currentImageIndex]
+                )}`}
                 alt={`Image ${currentImageIndex + 1}`}
                 className="object-cover rounded-lg"
                 fill

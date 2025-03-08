@@ -13,6 +13,22 @@ export const fetchAccommodationById = async (id: string) => {
   return response.json();
 };
 
+export const fetchAccommodationByUserId = async (token: string | undefined) => {
+  const auth = `Bearer ${token}`;
+
+  const response = await fetch(`${API_URL}/accommodations/user`, {
+    method: "GET",
+    headers: {
+      Authorization: auth,
+      "Content-type": "application/json",
+    },
+    mode: "cors",
+    credentials: "same-origin",
+  });
+  if (!response.ok) throw new Error("Erreur lors de la modification");
+  return response.json();
+};
+
 export const createAccommodation = async (
   token: string | undefined,
   formData: FormData

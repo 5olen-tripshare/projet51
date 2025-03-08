@@ -18,6 +18,7 @@ import { useState, useEffect } from "react";
 import {
   createTransaction,
   countTransactionByAccommodationId,
+  checkUserTransaction,
 } from "@/src/lib/transaction-api";
 import { useRouter, useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -83,37 +84,50 @@ export default function DetailAccommodation(props: {
 
   const handleSubmit = async () => {
     try {
-      console.log("envoi de la réservation");
-      const countTransaction = await countTransactionByAccommodationId(
-        accommodationId
-      );
-      console.log("test1");
-      if (countTransaction.transactionCount != accommodation.totalPlaces) {
-        const formData = new FormData();
-        formData.append("accommodationId", accommodationId);
-        formData.append("totalPrice", totalPrice.toString());
-        if (startDate && endDate) {
-          formData.append("startDate", startDate.toISOString());
-          formData.append("endDate", endDate.toISOString());
+      setLoading(true);
+
+      const reservationData = {
+        accommodationId: accommodationId,
+        startDate: startDate?.toISOString(),
+        endDate: endDate?.toISOString(),
+      };
+
+      const check = await checkUserTransaction(token, reservationData);
+
+      if (!check) {
+        console.log("envoi de la réservation");
+        const countTransaction = await countTransactionByAccommodationId(
+          reservationData
+        );
+        console.log("test1");
+        if (countTransaction.transactionCount != accommodation.totalPlaces) {
+          const formData = new FormData();
+          formData.append("accommodationId", accommodationId);
+          formData.append("totalPrice", totalPrice.toString());
+          if (startDate && endDate) {
+            formData.append("startDate", startDate.toISOString());
+            formData.append("endDate", endDate.toISOString());
+          } else {
+            alert("Veuillez sélectionner une date");
+            return;
+          }
+          formData.append("userId", "deded");
+
+          console.log("test2");
+          console.log("accommodationId:", formData.get("accommodationId"));
+          console.log("totalPrice:", formData.get("totalPrice"));
+          console.log("startDate:", formData.get("startDate"));
+          console.log("endDate:", formData.get("endDate"));
+
+          await createTransaction(token, formData);
+
+          router.push("/account/history");
         } else {
-          alert("Veuillez sélectionner une date");
+          alert("Aucune réservation disponible pour cet hébergement !");
           return;
         }
-        formData.append("userId", "deded");
-
-        console.log("test2");
-        console.log("accommodationId:", formData.get("accommodationId"));
-        console.log("totalPrice:", formData.get("totalPrice"));
-        console.log("startDate:", formData.get("startDate"));
-        console.log("endDate:", formData.get("endDate"));
-
-        setLoading(true);
-
-        await createTransaction(token, formData);
-
-        router.push("/account/history");
       } else {
-        alert("Aucune réservation disponible pour cet hébergement !");
+        alert("Vous avez déjà réservé cet hébergement pour ces dates");
         return;
       }
     } catch (error) {

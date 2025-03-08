@@ -2,7 +2,8 @@
 import Link from "next/link";
 import { AccommodationCard } from "@/src/components/rental/accommodationCard";
 import { useState, useEffect } from "react";
-import { fetchAccommodations } from "@/src/lib/accommodation-api";
+import { fetchAccommodationByUserId } from "@/src/lib/accommodation-api";
+import { useSession } from "next-auth/react";
 
 type Accommodation = {
   _id: string;
@@ -27,14 +28,17 @@ type Accommodation = {
 export default function Info() {
   const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
 
+  const { data: session } = useSession();
+  const token = session?.user?.accessToken;
+
   useEffect(() => {
     async function loadAccommodations() {
-      const data = await fetchAccommodations();
+      const data = await fetchAccommodationByUserId(token);
       console.log(data);
       setAccommodations(data);
     }
     loadAccommodations();
-  }, []);
+  }, [token]);
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">

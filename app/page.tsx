@@ -4,6 +4,7 @@ import Image from "next/image";
 import { MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
 import { fetchAccommodations } from "@/src/lib/accommodation-api";
+import { fetchFilterAccommodations } from "@/src/lib/transaction-api";
 import Recommendations from "@/src/components/recommendations/Recommendations";
 import { fetchUserInterests } from "@/app/api/interests";
 import { useSession } from "next-auth/react";
@@ -88,26 +89,50 @@ export default function Home() {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const destination = formData.get("destination") as string;
-    // const startDate = formData.get("startDate") as string;
-    // const endDate = formData.get("endDate") as string;
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    try {
+      setLoading(true);
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      const destination = formData.get("destination") as string;
+      const startDate = formData.get("startDate") as string;
+      const endDate = formData.get("endDate") as string;
 
-    const filteredAccommodations = accommodations.filter((acc) => {
-      if (!acc.isAvailable) return false;
+      if (!destination || !startDate || !endDate) {
+        try {
+          const data = await fetchAccommodations();
+          console.log(data);
+          setAccommodations(data);
+        } catch (error) {
+          console.error(
+            "Erreur lors de la récupération des hébergements :",
+            error
+          );
+        } finally {
+          setLoading(false);
+        }
 
-      // !!!!!!!! A FAIRE !!!!!!!!
-      // ajouter les conditions des dates par rapport à la disponibilité
-
-      if (!acc.localisation.toLowerCase().includes(destination.toLowerCase())) {
-        return false;
+        return;
       }
-      return true;
-    });
 
-    setAccommodations(filteredAccommodations);
+      const filteredAccommodations = await fetchFilterAccommodations(
+        destination,
+        new Date(startDate),
+        new Date(endDate)
+      );
+
+      const cleanAccommodations = filteredAccommodations.map(
+        ({ available, ...rest }) => rest
+      );
+
+      setAccommodations(cleanAccommodations);
+    } catch (error) {
+      setLoading(false);
+      console.error("Erreur:", error);
+      alert("Une erreur est survenue. Veuillez réessayer.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

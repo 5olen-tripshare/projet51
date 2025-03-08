@@ -48,10 +48,69 @@ export function AddEdit(props: {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    formData.append("isAvailable", "true");
+    formData.append("isAvailable", isAvailable.toString());
     formData.append("userId", "67a5e07sedf96772235c36f3");
 
     try {
+      if (formData.get("name") === "") {
+        alert("Le nom du logement est obligatoire");
+        return;
+      }
+
+      if (formData.get("localisation") === "") {
+        alert("La localisation du logement est obligatoire");
+        return;
+      }
+
+      if (formData.get("price") === "" || Number(formData.get("price")) <= 0) {
+        alert("Le prix du logement est obligatoire");
+        return;
+      }
+
+      if (formData.get("description") === "") {
+        alert("La description du logement est obligatoire");
+        return;
+      }
+
+      if (
+        formData.get("totalPlaces") === "" ||
+        Number(formData.get("totalPlaces")) <= 0
+      ) {
+        alert("Le nombre de places maximum est obligatoire");
+        return;
+      }
+
+      if (
+        formData.get("squareMeter") === "" ||
+        Number(formData.get("squareMeter")) <= 0
+      ) {
+        alert("Le nombre de m² est obligatoire");
+        return;
+      }
+
+      if (
+        formData.get("numberRoom") === "" ||
+        Number(formData.get("numberRoom")) <= 0
+      ) {
+        alert("Le nombre de pièces est obligatoire");
+        return;
+      }
+
+      if (
+        formData.get("bedRoom") === "" ||
+        Number(formData.get("bedRoom")) <= 0
+      ) {
+        alert("Le nombre de chambres est obligatoire");
+        return;
+      }
+
+      let countAncienneImage = 0;
+      if (image) countAncienneImage = image.length;
+      if (countImage + countAncienneImage < 5) {
+        alert("Il faut au moins 5 images pour un logement");
+        return;
+      }
+
       console.log("Données envoyées :", formData);
 
       if (accommodation?._id) {
@@ -73,6 +132,7 @@ export function AddEdit(props: {
   const [localisation, setLocalisation] = useState(accommodation?.localisation);
   const [price, setPrice] = useState(accommodation?.price);
   const [metre2, setMetre2] = useState(accommodation?.squareMeter);
+  const [isAvailable, setIsAvailable] = useState(accommodation?.isAvailable);
   const [description, setDescription] = useState(accommodation?.description);
   const [numberRoom, setNumberRoom] = useState(accommodation?.numberRoom);
   const [bedRoom, setBedRoom] = useState(accommodation?.bedRoom);
@@ -122,6 +182,33 @@ export function AddEdit(props: {
           <div className="end-0 flex flex-col items-end">
             <br />
 
+            <div className="flex items-center mb-2">
+              <label htmlFor="isAvailable" className="mr-2 text-sm">
+                Disponible
+              </label>
+              <div className="relative inline-block w-12 h-6 transition duration-200 ease-in-out rounded-full">
+                <input
+                  id="isAvailable"
+                  type="checkbox"
+                  className="absolute w-0 h-0 opacity-0"
+                  checked={isAvailable}
+                  onChange={(e) => setIsAvailable(e.target.checked)}
+                />
+                <label
+                  htmlFor="isAvailable"
+                  className={`block w-12 h-6 overflow-hidden rounded-full cursor-pointer ${
+                    isAvailable ? "bg-orange-500" : "bg-gray-300"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 left-0.5 bg-white w-5 h-5 rounded-full transition-transform duration-200 ease-in-out ${
+                      isAvailable ? "translate-x-6" : "translate-x-0"
+                    }`}
+                  ></span>
+                </label>
+              </div>
+            </div>
+
             <div className="text-orange-500 mb-2">
               <span className="text-2xl font-bold">
                 <input
@@ -131,7 +218,7 @@ export function AddEdit(props: {
                   className="border-collapse border border-neutral-300 rounded-md text-right mr-1 w-20"
                   type="number"
                   placeholder="0"
-                  min={0}
+                  min={1}
                 />
                 €
               </span>
@@ -206,6 +293,7 @@ export function AddEdit(props: {
           Nombres de personnes maximum :{" "}
           <input
             type="number"
+            min={1}
             value={totalPlaces}
             onChange={(e) => setTotalPlaces(Number(e.target.value))}
             name="totalPlaces"
@@ -300,6 +388,7 @@ export function AddEdit(props: {
           <div className="flex items-center gap-2 mb-2">
             <input
               type="number"
+              min={1}
               value={metre2}
               onChange={(e) => setMetre2(Number(e.target.value))}
               name="squareMeter"
@@ -310,6 +399,7 @@ export function AddEdit(props: {
           <div className="flex items-center gap-2 mb-2">
             <input
               type="number"
+              min={1}
               value={numberRoom}
               onChange={(e) => setNumberRoom(Number(e.target.value))}
               name="numberRoom"
@@ -320,6 +410,7 @@ export function AddEdit(props: {
           <div className="flex items-center gap-2 mb-2">
             <input
               type="number"
+              min={1}
               value={bedRoom}
               onChange={(e) => setBedRoom(Number(e.target.value))}
               name="bedRoom"

@@ -45,7 +45,6 @@ export function AddEdit(props: {
     const formData = new FormData(form);
 
     formData.append("isAvailable", isAvailable.toString());
-    formData.append("userId", "67a5e07sedf96772235c36f3");
 
     try {
       if (formData.get("name") === "") {

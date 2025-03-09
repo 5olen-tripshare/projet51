@@ -1,10 +1,13 @@
 "use client";
 import { AccommodationCard } from "@/src/components/accommodations/accommodationCard";
-import accommodationsData from "@/src/data/accommodations.json";
 import Image from "next/image";
 import { MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
-import { fetchAccommodations } from "@/src/lib/api";
+import { fetchAccommodations } from "@/src/lib/accommodation-api";
+import { fetchFilterAccommodations } from "@/src/lib/transaction-api";
+import Recommendations from "@/src/components/recommendations/Recommendations";
+import { fetchUserInterests } from "@/app/api/interests";
+import { useSession } from "next-auth/react";
 
 type Accommodation = {
   _id: string;
@@ -27,30 +30,48 @@ type Accommodation = {
 };
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id || null;
+
   const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
-  const [accommodationsData, setAccommodationsData] = useState<Accommodation[]>(
-    []
-  );
+  const [userInterests, setUserInterests] = useState<string[]>([]);
+  const [destination, setDestination] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const loadInterests = async () => {
+      const interests = await fetchUserInterests(userId);
+      setUserInterests(interests);
+    };
+
+    loadInterests();
+  }, [userId]);
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadAccommodations() {
-      const data = await fetchAccommodations();
-      console.log(data);
-      setAccommodationsData(data);
-      setAccommodations(data);
+      try {
+        const data = await fetchAccommodations();
+        setAccommodations(data);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des hébergements :",
+          error
+        );
+      } finally {
+        setLoading(false);
+      }
     }
     loadAccommodations();
   }, []);
 
-  const [destination, setDestination] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-
-  // Pagination
   const itemsPerPage = 12;
-  const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(accommodations.length / itemsPerPage);
-
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentData = accommodations.slice(startIndex, endIndex);
@@ -63,39 +84,49 @@ export default function Home() {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const destination = formData.get("destination");
-    const startDate = formData.get("startDate");
-    const endDate = formData.get("endDate");
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    try {
+      setLoading(true);
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      const destination = formData.get("destination") as string;
+      const startDate = formData.get("startDate") as string;
+      const endDate = formData.get("endDate") as string;
 
-    const data = {
-      destination,
-      startDate,
-      endDate,
-    };
-    console.log(data);
+      if (!destination || !startDate || !endDate) {
+        try {
+          const data = await fetchAccommodations();
+          setAccommodations(data);
+        } catch (error) {
+          console.error(
+            "Erreur lors de la récupération des hébergements :",
+            error
+          );
+        } finally {
+          setLoading(false);
+        }
 
-    const filteredAccommodations = accommodationsData.filter((acc) => {
-      if (!acc.isAvailable) return false;
-
-      // !!!!!!!! A FAIRE !!!!!!!!
-      // ajouter les conditions des dates par rapport à la disponibilité
-
-      if (
-        !acc.localisation
-          .toLowerCase()
-          .includes(String(destination)?.toLowerCase())
-      ) {
-        return false;
+        return;
       }
 
-      return true;
-    });
+      const filteredAccommodations = await fetchFilterAccommodations(
+        destination,
+        new Date(startDate),
+        new Date(endDate)
+      );
 
-    setAccommodations(filteredAccommodations);
+      const cleanAccommodations = filteredAccommodations.map(
+        ({ available, ...rest }) => rest
+      );
+
+      setAccommodations(cleanAccommodations);
+    } catch (error) {
+      setLoading(false);
+      console.error("Erreur:", error);
+      alert("Une erreur est survenue. Veuillez réessayer.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -122,9 +153,7 @@ export default function Home() {
 
       <div className="relative z-20 -mt-8 flex justify-center">
         <form
-          onSubmit={(e) => {
-            handleSubmit(e);
-          }}
+          onSubmit={handleSubmit}
           method="post"
           className="bg-white p-2 rounded-lg shadow-lg max-w-6xl w-full"
         >
@@ -146,8 +175,6 @@ export default function Home() {
                 name="startDate"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                id="startDate"
-                className="grow"
               />
             </label>
             <label className="input input-bordered flex items-center gap-2">
@@ -156,8 +183,6 @@ export default function Home() {
                 name="endDate"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                id="endDate"
-                className="grow"
               />
             </label>
             <button
@@ -170,14 +195,19 @@ export default function Home() {
         </form>
       </div>
 
-      <div className="grid grid-cols-1  md:grid-cols-2  xl:grid-cols-3 gap-6 pt-16">
-        {currentData.map((accommodation) => (
-          <AccommodationCard
-            key={accommodation._id}
-            accommodation={accommodation}
-          />
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pt-16">
+        {loading ? (
+          <span className="loading loading-dots loading-xl"></span>
+        ) : (
+          currentData.map((accommodation) => (
+            <AccommodationCard
+              key={accommodation._id}
+              accommodation={accommodation}
+            />
+          ))
+        )}
       </div>
+
       <div style={{ marginTop: "20px" }}>
         <button
           onClick={handlePrevious}
@@ -197,6 +227,12 @@ export default function Home() {
           Suivant
         </button>
       </div>
+
+      {userId && (
+        <div style={{ marginTop: "20px" }}>
+          <Recommendations userId={userId} userInterests={userInterests} />
+        </div>
+      )}
     </div>
   );
 }

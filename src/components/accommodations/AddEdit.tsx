@@ -6,8 +6,12 @@ import listInterests from "@/src/data/interests.json";
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
-import { createAccommodation, updateAccommodation } from "@/src/lib/api";
+import {
+  createAccommodation,
+  updateAccommodation,
+} from "@/src/lib/accommodation-api";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export function AddEdit(props: {
   accommodation?: {
@@ -17,10 +21,6 @@ export function AddEdit(props: {
     price: number;
     description: string;
     image: string[];
-    // reviews: {
-    //   rating: number;
-    //   count: number;
-    // };
     topCriteria: string[];
     interests: string[];
     isAvailable: boolean;
@@ -32,6 +32,9 @@ export function AddEdit(props: {
 }) {
   const router = useRouter();
 
+  const { data: session } = useSession();
+  const token = session?.user?.accessToken;
+
   function getIconComponent(iconName: string) {
     return Icons[iconName as keyof typeof Icons] as React.ElementType;
   }
@@ -41,47 +44,72 @@ export function AddEdit(props: {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    const userId = "60b6f7b3b3b3b30015f1b3b3";
-    const isAvailable = true;
-    const name = formData.get("name");
-    const localisation = formData.get("localisation");
-    const description = formData.get("description");
-    const price = Number(formData.get("price"));
-    const totalPlaces = Number(formData.get("totalPlaces"));
-    const squareMeter = Number(formData.get("squareMeter"));
-    const numberRoom = Number(formData.get("numberRoom"));
-    const bedRoom = Number(formData.get("bedRoom"));
-    const interests = formData.getAll("interests[]");
-    const topCriteria = formData.getAll("topCriteria[]");
-    const files = formData.getAll("file") as File[];
-    const ancienneImage = formData.getAll("ancienneImage[]");
-
-    const imagesToUpload = files.length > 0 ? files : undefined;
-
-    const data = {
-      userId,
-      isAvailable,
-      name,
-      localisation,
-      description,
-      price,
-      topCriteria,
-      interests,
-      squareMeter,
-      totalPlaces,
-      numberRoom,
-      bedRoom,
-      files: imagesToUpload,
-      ancienneImage,
-    };
+    formData.append("isAvailable", isAvailable.toString());
 
     try {
-      console.log("Données envoyées :", data);
+      if (formData.get("name") === "") {
+        alert("Le nom du logement est obligatoire");
+        return;
+      }
+
+      if (formData.get("localisation") === "") {
+        alert("La localisation du logement est obligatoire");
+        return;
+      }
+
+      if (formData.get("price") === "" || Number(formData.get("price")) <= 0) {
+        alert("Le prix du logement est obligatoire");
+        return;
+      }
+
+      if (formData.get("description") === "") {
+        alert("La description du logement est obligatoire");
+        return;
+      }
+
+      if (
+        formData.get("totalPlaces") === "" ||
+        Number(formData.get("totalPlaces")) <= 0
+      ) {
+        alert("Le nombre de places maximum est obligatoire");
+        return;
+      }
+
+      if (
+        formData.get("squareMeter") === "" ||
+        Number(formData.get("squareMeter")) <= 0
+      ) {
+        alert("Le nombre de m² est obligatoire");
+        return;
+      }
+
+      if (
+        formData.get("numberRoom") === "" ||
+        Number(formData.get("numberRoom")) <= 0
+      ) {
+        alert("Le nombre de pièces est obligatoire");
+        return;
+      }
+
+      if (
+        formData.get("bedRoom") === "" ||
+        Number(formData.get("bedRoom")) <= 0
+      ) {
+        alert("Le nombre de chambres est obligatoire");
+        return;
+      }
+
+      let countAncienneImage = 0;
+      if (image) countAncienneImage = image.length;
+      if (countImage + countAncienneImage < 5) {
+        alert("Il faut au moins 5 images pour un logement");
+        return;
+      }
 
       if (accommodation?._id) {
-        await updateAccommodation(accommodation._id, data);
+        await updateAccommodation(token, accommodation._id, formData);
       } else {
-        await createAccommodation(data);
+        await createAccommodation(token, formData);
       }
 
       router.push("/rental/info");
@@ -97,6 +125,7 @@ export function AddEdit(props: {
   const [localisation, setLocalisation] = useState(accommodation?.localisation);
   const [price, setPrice] = useState(accommodation?.price);
   const [metre2, setMetre2] = useState(accommodation?.squareMeter);
+  const [isAvailable, setIsAvailable] = useState(accommodation?.isAvailable);
   const [description, setDescription] = useState(accommodation?.description);
   const [numberRoom, setNumberRoom] = useState(accommodation?.numberRoom);
   const [bedRoom, setBedRoom] = useState(accommodation?.bedRoom);
@@ -146,6 +175,33 @@ export function AddEdit(props: {
           <div className="end-0 flex flex-col items-end">
             <br />
 
+            <div className="flex items-center mb-2">
+              <label htmlFor="isAvailable" className="mr-2 text-sm">
+                Disponible
+              </label>
+              <div className="relative inline-block w-12 h-6 transition duration-200 ease-in-out rounded-full">
+                <input
+                  id="isAvailable"
+                  type="checkbox"
+                  className="absolute w-0 h-0 opacity-0"
+                  checked={isAvailable}
+                  onChange={(e) => setIsAvailable(e.target.checked)}
+                />
+                <label
+                  htmlFor="isAvailable"
+                  className={`block w-12 h-6 overflow-hidden rounded-full cursor-pointer ${
+                    isAvailable ? "bg-orange-500" : "bg-gray-300"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 left-0.5 bg-white w-5 h-5 rounded-full transition-transform duration-200 ease-in-out ${
+                      isAvailable ? "translate-x-6" : "translate-x-0"
+                    }`}
+                  ></span>
+                </label>
+              </div>
+            </div>
+
             <div className="text-orange-500 mb-2">
               <span className="text-2xl font-bold">
                 <input
@@ -155,7 +211,7 @@ export function AddEdit(props: {
                   className="border-collapse border border-neutral-300 rounded-md text-right mr-1 w-20"
                   type="number"
                   placeholder="0"
-                  min={0}
+                  min={1}
                 />
                 €
               </span>
@@ -166,16 +222,20 @@ export function AddEdit(props: {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
           {image?.map((img, index) => {
+            const url_img = `${
+              process.env.NEXT_PUBLIC_IMAGE_URI
+            }/${encodeURIComponent(img)}`;
             return (
               <div key={index} className="relative h-48 ">
                 <button
+                  type="button"
                   className="absolute top-1 lg:-top-2 right-1 lg:-right-2 z-20 bg-red-600  text-white  rounded-full hover:bg-opacity-75"
                   onClick={() => setImage(image?.filter((c) => c !== img))}
                 >
                   <Icons.X className="h-6 w-6" />
                 </button>
                 <Image
-                  src={img}
+                  src={url_img}
                   alt={`image${index}`}
                   fill
                   className="object-cover rounded-lg"
@@ -188,7 +248,6 @@ export function AddEdit(props: {
         <div className="my-4 flex flex-row">
           <label
             htmlFor="file-upload"
-            // bg-brown btn btn-md w-48 hover:bg-orange-300 relative z-20 -mt-20 mr-4
             className="cursor-pointer bg-brown text-white py-2 px-4 rounded-lg hover:bg-orange-300"
           >
             Ajouter des images
@@ -196,13 +255,12 @@ export function AddEdit(props: {
           <input
             id="file-upload"
             type="file"
-            name="file"
+            name="files"
             className="hidden"
             multiple={true}
             onChange={(e) => {
               const files = e.target.files;
               if (files) {
-                console.log("Fichiers sélectionnés :", files);
                 setCountImage(countImage + files.length);
               }
             }}
@@ -227,6 +285,7 @@ export function AddEdit(props: {
           Nombres de personnes maximum :{" "}
           <input
             type="number"
+            min={1}
             value={totalPlaces}
             onChange={(e) => setTotalPlaces(Number(e.target.value))}
             name="totalPlaces"
@@ -321,6 +380,7 @@ export function AddEdit(props: {
           <div className="flex items-center gap-2 mb-2">
             <input
               type="number"
+              min={1}
               value={metre2}
               onChange={(e) => setMetre2(Number(e.target.value))}
               name="squareMeter"
@@ -331,6 +391,7 @@ export function AddEdit(props: {
           <div className="flex items-center gap-2 mb-2">
             <input
               type="number"
+              min={1}
               value={numberRoom}
               onChange={(e) => setNumberRoom(Number(e.target.value))}
               name="numberRoom"
@@ -341,6 +402,7 @@ export function AddEdit(props: {
           <div className="flex items-center gap-2 mb-2">
             <input
               type="number"
+              min={1}
               value={bedRoom}
               onChange={(e) => setBedRoom(Number(e.target.value))}
               name="bedRoom"

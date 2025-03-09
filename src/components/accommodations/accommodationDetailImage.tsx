@@ -1,5 +1,4 @@
-"use client"; // ✅ Obligatoire pour activer les hooks React
-
+"use client";
 import { useState } from "react";
 import Image from "next/image";
 import * as Icons from "lucide-react";
@@ -41,7 +40,9 @@ export default function AccommodationDetailClient({ accommodation }: Props) {
         {accommodation.image[0] ? (
           <div className="relative h-96 ">
             <Image
-              src={accommodation.image[0]}
+              src={`${process.env.NEXT_PUBLIC_IMAGE_URI}/${encodeURIComponent(
+                accommodation.image[0]
+              )}`}
               alt={accommodation.name[0]}
               fill
               className="object-cover rounded-lg"
@@ -54,7 +55,9 @@ export default function AccommodationDetailClient({ accommodation }: Props) {
           {accommodation.image[1] ? (
             <div className="relative h-48 ">
               <Image
-                src={accommodation.image[1]}
+                src={`${process.env.NEXT_PUBLIC_IMAGE_URI}/${encodeURIComponent(
+                  accommodation.image[1]
+                )}`}
                 alt={accommodation.name[1]}
                 fill
                 className="object-cover rounded-lg"
@@ -66,7 +69,9 @@ export default function AccommodationDetailClient({ accommodation }: Props) {
           {accommodation.image[2] ? (
             <div className="relative h-48 ">
               <Image
-                src={accommodation.image[2]}
+                src={`${process.env.NEXT_PUBLIC_IMAGE_URI}/${encodeURIComponent(
+                  accommodation.image[2]
+                )}`}
                 alt={accommodation.name[2]}
                 fill
                 className="object-cover rounded-lg"
@@ -78,7 +83,9 @@ export default function AccommodationDetailClient({ accommodation }: Props) {
           {accommodation.image[3] ? (
             <div className="relative h-48 ">
               <Image
-                src={accommodation.image[3]}
+                src={`${process.env.NEXT_PUBLIC_IMAGE_URI}/${encodeURIComponent(
+                  accommodation.image[3]
+                )}`}
                 alt={accommodation.name[3]}
                 fill
                 className="object-cover rounded-lg"
@@ -90,7 +97,9 @@ export default function AccommodationDetailClient({ accommodation }: Props) {
           {accommodation.image[4] ? (
             <div className="relative h-48 ">
               <Image
-                src={accommodation.image[4]}
+                src={`${process.env.NEXT_PUBLIC_IMAGE_URI}/${encodeURIComponent(
+                  accommodation.image[4]
+                )}`}
                 alt={accommodation.name[4]}
                 fill
                 className="object-cover rounded-lg"
@@ -122,7 +131,9 @@ export default function AccommodationDetailClient({ accommodation }: Props) {
 
             <div className="relative h-96">
               <Image
-                src={accommodation.image[currentImageIndex]}
+                src={`${process.env.NEXT_PUBLIC_IMAGE_URI}/${encodeURIComponent(
+                  accommodation.image[currentImageIndex]
+                )}`}
                 alt={`Image ${currentImageIndex + 1}`}
                 className="object-cover rounded-lg"
                 fill

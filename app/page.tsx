@@ -35,7 +35,6 @@ export default function Home() {
 
   const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
   const [userInterests, setUserInterests] = useState<string[]>([]);
-  // const [loading, setLoading] = useState(true);
   const [destination, setDestination] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -47,7 +46,6 @@ export default function Home() {
     const loadInterests = async () => {
       const interests = await fetchUserInterests(userId);
       setUserInterests(interests);
-      // setLoading(false);
     };
 
     loadInterests();
@@ -59,7 +57,6 @@ export default function Home() {
     async function loadAccommodations() {
       try {
         const data = await fetchAccommodations();
-        console.log(data);
         setAccommodations(data);
       } catch (error) {
         console.error(
@@ -72,8 +69,6 @@ export default function Home() {
     }
     loadAccommodations();
   }, []);
-
-  // if (status === "loading") return <p>Chargement...</p>;
 
   const itemsPerPage = 12;
   const totalPages = Math.ceil(accommodations.length / itemsPerPage);
@@ -101,7 +96,6 @@ export default function Home() {
       if (!destination || !startDate || !endDate) {
         try {
           const data = await fetchAccommodations();
-          console.log(data);
           setAccommodations(data);
         } catch (error) {
           console.error(

@@ -11,12 +11,12 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      signIn("fusionauth"); // Redirection directe vers FusionAuth
+      signIn("fusionauth");
     }
   }, [status]);
 
   if (status === "loading") {
-    return <p>Chargement...</p>; // Affiche un message pendant la vérification de la session
+    return <p>Chargement...</p>;
   }
 
   return <>{session ? children : null}</>;

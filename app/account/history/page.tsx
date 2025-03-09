@@ -5,29 +5,6 @@ import { useSession } from "next-auth/react";
 import { fetchTransactionByUserId } from "@/src/lib/transaction-api";
 
 export default function History() {
-  // const rentals = [
-  //   {
-  //     id: 1,
-  //     name: "Rental 1",
-  //     location: "Location 1",
-  //     startDate: "2024-08-15",
-  //     endDate: "2024-08-22",
-  //     price: 200,
-  //     imageUrl:
-  //       "https://cf.bstatic.com/xdata/images/hotel/max1024x768/437582157.jpg?k=af0d3f936d81804499134f0c06d372be35d032473ef3738ad2e4917064ac7d35&o=&hp=1",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Rental 2",
-  //     location: "Location 2",
-  //     startDate: "2024-09-01",
-  //     endDate: "2024-09-10",
-  //     price: 300,
-  //     imageUrl:
-  //       "https://cf.bstatic.com/xdata/images/hotel/max1024x768/437582157.jpg?k=af0d3f936d81804499134f0c06d372be35d032473ef3738ad2e4917064ac7d35&o=&hp=1",
-  //   },
-  // ];
-
   type Transaction = {
     _id: string;
     userId: string;
@@ -68,7 +45,6 @@ export default function History() {
     async function loadTransactions() {
       try {
         const data = await fetchTransactionByUserId(token);
-        console.log(data);
         setTransactions(data);
       } catch (error) {
         console.error(

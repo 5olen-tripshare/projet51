@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { fetchRecommendations } from "@/app/api/recommendations";
 import { AccommodationCard } from "../accommodations/accommodationCard";
 
-// 🔹 Définition du type pour un hébergement
 type Accommodation = {
   _id: string;
   name: string;
@@ -23,7 +22,6 @@ type Accommodation = {
   bedRoom: number;
 };
 
-// 🔹 Définition du type des props
 type RecommendationsProps = {
   userId: string;
   userInterests: string[];

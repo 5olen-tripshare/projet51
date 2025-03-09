@@ -21,10 +21,6 @@ export function AddEdit(props: {
     price: number;
     description: string;
     image: string[];
-    // reviews: {
-    //   rating: number;
-    //   count: number;
-    // };
     topCriteria: string[];
     interests: string[];
     isAvailable: boolean;
@@ -110,8 +106,6 @@ export function AddEdit(props: {
         alert("Il faut au moins 5 images pour un logement");
         return;
       }
-
-      console.log("Données envoyées :", formData);
 
       if (accommodation?._id) {
         await updateAccommodation(token, accommodation._id, formData);
@@ -268,7 +262,6 @@ export function AddEdit(props: {
             onChange={(e) => {
               const files = e.target.files;
               if (files) {
-                console.log("Fichiers sélectionnés :", files);
                 setCountImage(countImage + files.length);
               }
             }}

@@ -18,7 +18,6 @@ export default function Info() {
   const [userInterests, setUserInterests] = useState<string[]>([]);
   const [user, setUser] = useState(defaultUserInfo);
 
-  // Synchronisation de l'état avec la session
   useEffect(() => {
     if (session?.user) {
       setUser((prevUser) => ({

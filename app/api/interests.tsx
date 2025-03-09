@@ -1,6 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_GATEWAY_API_URL;
 
-// 🔹 Fonction pour récupérer les intérêts de l'utilisateur
+// Recup les interests
 export const fetchUserInterests = async (userId: string): Promise<string[]> => {
   try {
     const response = await fetch(`${API_URL}/interests/${userId}`);
@@ -17,7 +17,7 @@ export const fetchUserInterests = async (userId: string): Promise<string[]> => {
   }
 };
 
-// 🔹 Fonction pour sauvegarder les intérêts de l'utilisateur
+// Sauvegarder les interests
 export const saveUserInterests = async (
   userId: string,
   interests: string[]

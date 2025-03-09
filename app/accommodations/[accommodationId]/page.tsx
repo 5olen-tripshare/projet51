@@ -95,11 +95,9 @@ export default function DetailAccommodation(props: {
       const check = await checkUserTransaction(token, reservationData);
 
       if (!check) {
-        console.log("envoi de la réservation");
         const countTransaction = await countTransactionByAccommodationId(
           reservationData
         );
-        console.log("test1");
         if (countTransaction.transactionCount != accommodation.totalPlaces) {
           const formData = new FormData();
           formData.append("accommodationId", accommodationId);
@@ -112,12 +110,6 @@ export default function DetailAccommodation(props: {
             return;
           }
           formData.append("userId", "deded");
-
-          console.log("test2");
-          console.log("accommodationId:", formData.get("accommodationId"));
-          console.log("totalPrice:", formData.get("totalPrice"));
-          console.log("startDate:", formData.get("startDate"));
-          console.log("endDate:", formData.get("endDate"));
 
           await createTransaction(token, formData);
 

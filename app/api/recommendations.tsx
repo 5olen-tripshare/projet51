@@ -1,4 +1,3 @@
-// 🔹 Définition du type pour un hébergement
 export type Accommodation = {
   _id: string;
   name: string;
@@ -21,7 +20,6 @@ export type Accommodation = {
 
 const API_URL = process.env.NEXT_PUBLIC_GATEWAY_API_URL;
 
-// 🔹 Fonction pour récupérer les recommandations avec typage
 export const fetchRecommendations = async (
   userId: string
 ): Promise<Accommodation[]> => {

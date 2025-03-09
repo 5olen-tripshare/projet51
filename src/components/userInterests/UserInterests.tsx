@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { fetchUserInterests, saveUserInterests } from "@/app/api/interests";
 
-// 🔹 Définition des types des props
 type UserInterestsProps = {
   userId: string;
   onUpdateInterests: (interests: string[]) => void;
 };
 
 const UserInterests: React.FC<UserInterestsProps> = ({ userId, onUpdateInterests }) => {
-  // 🔹 Typage correct des états
   const [interests, setInterests] = useState<string[]>([]);
   const [newInterest, setNewInterest] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);

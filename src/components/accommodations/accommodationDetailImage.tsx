@@ -1,5 +1,4 @@
-"use client"; // ✅ Obligatoire pour activer les hooks React
-
+"use client";
 import { useState } from "react";
 import Image from "next/image";
 import * as Icons from "lucide-react";

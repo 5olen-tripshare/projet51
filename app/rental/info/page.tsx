@@ -34,7 +34,6 @@ export default function Info() {
   useEffect(() => {
     async function loadAccommodations() {
       const data = await fetchAccommodationByUserId(token);
-      console.log(data);
       setAccommodations(data);
     }
     loadAccommodations();

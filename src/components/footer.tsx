@@ -9,7 +9,7 @@ export function Footer() {
             <h3 className="text-lg font-semibold mb-4">À propos</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/about" className="hover:text-blue-400">
+                <Link href="#" className="hover:text-blue-400">
                   Qui sommes-nous
                 </Link>
               </li>
@@ -20,7 +20,7 @@ export function Footer() {
             <h3 className="text-lg font-semibold mb-4">Contact</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/contact" className="hover:text-blue-400">
+                <Link href="#" className="hover:text-blue-400">
                   Nous contacter
                 </Link>
               </li>

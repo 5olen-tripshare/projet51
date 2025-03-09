@@ -8,7 +8,7 @@ export function Navbar() {
   const { data: session } = useSession();
 
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-white shadow-md relative">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="text-xl font-bold text-blue-600">
@@ -18,6 +18,12 @@ export function Navbar() {
           <div className="hidden md:flex items-center space-x-4">
             {session && (
               <>
+                <Link
+                  href="/messenger"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Messagerie
+                </Link>
                 <Link
                   href="/rental/info"
                   className="text-gray-600 hover:text-blue-600 transition-colors"

@@ -1,0 +1,27 @@
+name: Update System
+
+on:
+  push:
+    branches:
+      - CI/CD-P51
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Connect to GCP and update system
+        env:
+          GCP_SSH_PRIVATE_KEY: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+          GCP_USER: ${{ secrets.GCP_USER }}
+          GCP_HOST: 104.199.0.139  # Mettre l'IP externe de ta VM
+
+        run: |
+          echo "$GCP_SSH_PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+
+          ssh -o StrictHostKeyChecking=no -i private_key.pem $GCP_USER@$GCP_HOST "sudo dnf update -y"

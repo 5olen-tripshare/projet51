@@ -23,11 +23,7 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y google-cloud-cli
 
-      - name: Activate Service Account
-        run: |
-          echo "$GCP_SERVICE_ACCOUNT_KEY" > gcp-key.json
-          gcloud auth activate-service-account ansible@refined-gravity-448109.iam.gserviceaccount.com --key-file=gcp-key.json
-          gcloud config set project refined-gravity-448109-m7
+
 
       - name: SSH into VM and Update System
         run: |

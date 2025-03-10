@@ -3,7 +3,7 @@ name: Setup Ansible on GCP
 on:
   push:
     branches:
-      - main
+      - CI/CD-P51
   workflow_dispatch:
 
 jobs:

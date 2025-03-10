@@ -61,3 +61,21 @@ jobs:
       - name: Verify Ansible installation on k3s-master
         run: |
           gcloud compute ssh k3s-master --zone europe-west1-b --command "ansible --version"
+
+  frontend:
+    runs-on: ubuntu-latest
+    needs: installation-ansible
+
+    steps:
+      - name: Deploy Frontend Application
+        run: |
+          echo "Deploying Frontend..."
+
+  backend:
+    runs-on: ubuntu-latest
+    needs: installation-ansible
+
+    steps:
+      - name: Deploy Backend Application
+        run: |
+          echo "Deploying Backend..."

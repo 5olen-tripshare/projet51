@@ -16,7 +16,7 @@ jobs:
 
       - name: Connect to GCP and update system
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           GCP_USER: ${{ secrets.GCP_USER }}
           GCP_HOST: 104.199.0.139  # Mettre l'IP externe de ta VM
 

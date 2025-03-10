@@ -25,6 +25,6 @@ jobs:
 
       - name: SSH into VMs and Update System
         run: |
-          for vm in k3s-master k3s-node-0 k3s-node-1; do
+          for vm in k3s-master k3s-node-0 k3s-node-1 k3s-node-2; do
             gcloud compute ssh $vm --zone europe-west1-b --command "sudo dnf update -y" --quiet
           done

@@ -19,12 +19,15 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
-      - name: Setup gcloud CLI
+      - name: Install Google Cloud CLI
         run: |
-          sudo apt-get install -y google-cloud-sdk
+          sudo apt-get update && sudo apt-get install -y google-cloud-cli
+
+      - name: Configure gcloud CLI
+        run: |
           gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
           gcloud config set project refined-gravity-448109-m7
 
       - name: SSH into VM and Update System
         run: |
-          gcloud compute ssh ansible --zone europe-west1-b --command "sudo dnf update -y" --quiet
+          gcloud compute ssh k3s-master --zone europe-west1-b --command "sudo dnf update -y" --quiet

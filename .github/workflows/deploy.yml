@@ -41,7 +41,7 @@ jobs:
 
       - name: Tester SSH via k3s-proxy
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 dakinizar46@104.199.0.139 "echo 'Connexion SSH OK via k3s-proxy'"
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 ansible@104.199.0.139 "echo 'Connexion SSH OK via k3s-proxy'"
 
 
       - name: Installer Ansible

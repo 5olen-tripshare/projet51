@@ -1,27 +1,30 @@
-name: Update System
+name: Setup Ansible on GCP
 
 on:
   push:
     branches:
-      - CI/CD-P51
+      - main
   workflow_dispatch:
 
 jobs:
-  update:
+  ansible-setup:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Connect to GCP and update system
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
-          GCP_USER: ${{ secrets.GCP_USER }}
-          GCP_HOST: 104.199.0.139  # Mettre l'IP externe de ta VM
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
+      - name: Setup gcloud CLI
         run: |
-          echo "$GCP_SSH_PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
+          sudo apt-get install -y google-cloud-sdk
+          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
+          gcloud config set project refined-gravity-448109-m7
 
-          ssh -o StrictHostKeyChecking=no -i private_key.pem $GCP_USER@$GCP_HOST "sudo dnf update -y"
+      - name: SSH into VM and Update System
+        run: |
+          gcloud compute ssh ansible --zone europe-west1-b --command "sudo dnf update -y" --quiet

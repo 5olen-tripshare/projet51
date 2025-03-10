@@ -1,4 +1,4 @@
-name: Setup Ansible on GCP
+name: Mise en place Ansible sur GoogleCloud
 
 on:
   push:
@@ -23,8 +23,8 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y google-cloud-cli
 
-
-
-      - name: SSH into VM and Update System
+      - name: SSH into VMs and Update System
         run: |
-          gcloud compute ssh k3s-master --zone europe-west1-b --command "sudo dnf update -y" --quiet
+          for vm in k3s-master k3s-node-0 k3s-node-1; do
+            gcloud compute ssh $vm --zone europe-west1-b --command "sudo dnf update -y" --quiet
+          done

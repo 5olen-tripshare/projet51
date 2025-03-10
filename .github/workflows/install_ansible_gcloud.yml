@@ -42,16 +42,16 @@ jobs:
       - name: Install Ansible on all VMs
         run: |
           for vm in k3s-master k3s-node-0 k3s-node-1 k3s-node-2; do
-            gcloud compute ssh $vm --zone europe-west1-b --command "sudo dnf install -y epel-release && sudo dnf install -y ansible" --quiet
+            gcloud compute ssh $vm --zone europe-west1-b --command "sudo dnf install -y epel-release && sudo dnf config-manager --set-enabled crb && sudo dnf install -y ansible" --quiet
           done
 
       - name: Configure Ansible inventory
         run: |
           echo "[k3s_cluster]" > inventory.ini
-          echo "k3s-master ansible_host=10.0.3" >> inventory.ini
-          echo "k3s-node-0 ansible_host=10.0.2" >> inventory.ini
-          echo "k3s-node-1 ansible_host=10.0.5" >> inventory.ini
-          echo "k3s-node-2 ansible_host=10.0.4" >> inventory.ini
+          echo "k3s-master ansible_host=10.0.0.3" >> inventory.ini
+          echo "k3s-node-0 ansible_host=10.0.0.2" >> inventory.ini
+          echo "k3s-node-1 ansible_host=10.0.0.5" >> inventory.ini
+          echo "k3s-node-2 ansible_host=10.0.0.6" >> inventory.ini
           cat inventory.ini
 
       - name: Copy inventory to k3s-master

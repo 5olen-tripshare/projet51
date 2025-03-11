@@ -49,7 +49,10 @@ jobs:
           echo "k3s-node-0 ansible_host=10.0.0.2" >> inventory.ini
           echo "k3s-node-1 ansible_host=10.0.0.5" >> inventory.ini
           echo "k3s-node-2 ansible_host=10.0.0.6" >> inventory.ini
-          cat inventory.ini
+          sudo mkdir -p /etc/ansible
+          sudo mv inventory.ini /etc/ansible/inventory.ini
+          cat /etc/ansible/inventory.ini
+
 
       - name: Configure Ansible to use the inventory automatically
         run: |

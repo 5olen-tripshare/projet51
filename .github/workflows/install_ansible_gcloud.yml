@@ -70,6 +70,7 @@ jobs:
 
           
    
+     
       - name: Generate SSH key for Ansible user on k3s-master (if not exists)
         run: |
           gcloud compute ssh k3s-master --zone europe-west1-b --command "
@@ -78,7 +79,7 @@ jobs:
             fi
           "
 
-      - name: Copy SSH public key is on all nodes
+      - name: Ensure SSH public key is on all nodes
         run: |
           PUB_KEY=$(gcloud compute ssh k3s-master --zone europe-west1-b --command "sudo cat /home/ansible/.ssh/id_rsa.pub")
           for vm in k3s-master k3s-node-0 k3s-node-1 k3s-node-2; do

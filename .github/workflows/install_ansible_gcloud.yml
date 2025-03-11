@@ -133,3 +133,47 @@ jobs:
       - name: Deploy Backend Application
         run: |
           echo "Deploying Backend..."
+
+            deploy-postgres-docker:
+          runs-on: ubuntu-latest
+          needs: backend  # Lancer après backend
+          steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - name: Install Docker on k3s-master
+        run: |
+          gcloud compute ssh k3s-master --zone europe-west1-b --command "
+            sudo apt-get update
+            sudo apt-get install -y docker.io
+            sudo systemctl enable --now docker
+            sudo usermod -aG docker ansible
+          "
+
+      - name: Copy Docker files to k3s-master
+        run: |
+          gcloud compute scp -r ansible/docker-postgres k3s-master:~/ --zone europe-west1-b
+
+      - name: Deploy PostgreSQL cluster with Docker
+        run: |
+          gcloud compute ssh k3s-master --zone europe-west1-b --command "
+            cd ~/docker-postgres
+            docker-compose up -d
+          "
+
+      - name: Verify PostgreSQL Cluster
+        run: |
+          gcloud compute ssh k3s-master --zone europe-west1-b --command "
+            docker ps | grep postgres
+          "
+
+      - name: Test PostgreSQL Connection
+        run: |
+          gcloud compute ssh k3s-master --zone europe-west1-b --command "
+            docker exec $(docker ps -qf 'name=postgres') pg_isready -U postgres
+          "

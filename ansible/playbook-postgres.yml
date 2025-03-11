@@ -1,0 +1,5 @@
+- name: Déploiement de PostgreSQL HA avec Patroni
+  hosts: all
+  become: yes
+  roles:
+    - role: postgresql

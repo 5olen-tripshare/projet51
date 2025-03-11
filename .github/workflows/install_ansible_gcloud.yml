@@ -25,6 +25,7 @@ jobs:
 
       - name: SSH into VMs and Update System
         run: |
+          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
           for vm in k3s-master k3s-node-0 k3s-node-1 k3s-node-2; do
             gcloud compute ssh $vm --zone europe-west1-b --command "sudo dnf update -y" --quiet
           done
@@ -41,6 +42,7 @@ jobs:
 
       - name: Install Ansible on all VMs
         run: |
+          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
           for vm in k3s-master k3s-node-0 k3s-node-1 k3s-node-2; do
             gcloud compute ssh $vm --zone europe-west1-b --command "sudo dnf install -y epel-release && sudo dnf config-manager --set-enabled crb && sudo dnf install -y ansible" --quiet
           done
@@ -55,10 +57,12 @@ jobs:
 
       - name: Copy inventory to k3s-master
         run: |
+          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
           gcloud compute scp inventory.ini k3s-master:~/inventory.ini --zone europe-west1-b
 
       - name: Verify Ansible installation on k3s-master
         run: |
+          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
           gcloud compute ssh k3s-master --zone europe-west1-b --command "ansible --version"
 
   frontend:
@@ -81,26 +85,31 @@ jobs:
 
       - name: Install PostgreSQL Cluster Components
         run: |
+          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
           for vm in k3s-master k3s-node-0 k3s-node-1; do
             gcloud compute ssh $vm --zone europe-west1-b --command "sudo dnf install -y postgresql-server postgresql-contrib etcd haproxy python3-pip && pip3 install patroni" --quiet
           done
 
       - name: Configure PostgreSQL Master
         run: |
+          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
           gcloud compute ssh k3s-master --zone europe-west1-b --command "sudo postgresql-setup --initdb && sudo systemctl enable postgresql && sudo systemctl start postgresql"
 
       - name: Configure PostgreSQL Replicas
         run: |
+          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
           for vm in k3s-node-0 k3s-node-1; do
             gcloud compute ssh $vm --zone europe-west1-b --command "sudo systemctl stop postgresql && sudo rm -rf /var/lib/pgsql/data && sudo -u postgres pg_basebackup -h 10.0.0.3 -D /var/lib/pgsql/data -U replication -Fp -Xs -P -R && sudo systemctl start postgresql"
           done
 
       - name: Configure HAProxy for PostgreSQL
         run: |
+          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
           gcloud compute ssh k3s-master --zone europe-west1-b --command "echo 'HAProxy configuration goes here' > /etc/haproxy/haproxy.cfg && sudo systemctl restart haproxy"
 
       - name: Start PostgreSQL Cluster
         run: |
+          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
           for vm in k3s-master k3s-node-0 k3s-node-1; do
             gcloud compute ssh $vm --zone europe-west1-b --command "sudo systemctl restart postgresql"
           done
@@ -112,4 +121,5 @@ jobs:
     steps:
       - name: Deploy Kubernetes Pods
         run: |
+          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
           gcloud compute ssh k3s-master --zone europe-west1-b --command "kubectl apply -f /path/to/pods.yaml"

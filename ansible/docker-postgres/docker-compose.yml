@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    container_name: etcd
+    command: ["etcd", "--name", "etcd-node",
+              "--data-dir", "/etcd-data",
+              "--advertise-client-urls", "http://0.0.0.0:2379",
+              "--listen-client-urls", "http://0.0.0.0:2379"]
+    ports:
+      - "2379:2379"
+    networks:
+      - postgres-net
+
+  postgres:
+    build: .
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: supersecurepassword
+      POSTGRES_DB: mydb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - postgres-net
+    depends_on:
+      - etcd
+
+  haproxy:
+    image: haproxy:2.4
+    container_name: haproxy
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres-net
+    depends_on:
+      - postgres
+
+networks:
+  postgres-net:
+
+volumes:
+  postgres-data:

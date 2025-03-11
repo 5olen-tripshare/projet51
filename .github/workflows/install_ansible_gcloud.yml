@@ -147,15 +147,25 @@ jobs:
       with:
         credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
+    - name: Archive Kubernetes manifests
+      run: |
+        tar -czf k3s.tar.gz k3s/
+         
     - name: Copy Kubernetes manifests to k3s-master
       run: |
-        gcloud compute scp -r k3s/postgresql-ha.yaml k3s-master:~/ --zone europe-west1-b
+        gcloud compute scp k3s.tar.gz k3s-master:~/ --zone europe-west1-b
 
-    - name: Deploy PostgreSQL HA on K3s
+    - name: Extract Kubernetes manifests on k3s-master
       run: |
-        gcloud compute ssh k3s-master --zone europe-west1-b --command "
-          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-          kubectl apply -f ~/postgresql-ha.yaml
+       gcloud compute ssh k3s-master --zone europe-west1-b --command "
+        tar -xzf ~/k3s.tar.gz -C ~/
+    "
+    
+    - name: Deploy PostgreSQL HA on K3s
+          run: |
+            gcloud compute ssh k3s-master --zone europe-west1-b --command "
+              export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+              kubectl apply -f ~/postgresql-ha.yaml
         "
 
     - name: Wait for PostgreSQL Pods to be Ready

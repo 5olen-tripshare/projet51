@@ -86,6 +86,12 @@ jobs:
           uses: google-github-actions/auth@v1
           with:
             credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+        - name: Copier le dossier Ansible sur k3s-master
+          run: |
+            gcloud compute scp --recurse ansible k3s-master:/home/ansible/ --zone europe-west1-b
+            gcloud compute ssh k3s-master --zone europe-west1-b --command "sudo chown -R ansible:ansible /home/ansible"
+
   
   
         - name: Vérifier la connexion SSH entre k3s-master et les nœuds

@@ -132,7 +132,7 @@ jobs:
   deploy-postgres-k3s:
     runs-on: ubuntu-latest
     needs: backend  # Lancer après backend
-
+  
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -166,5 +166,3 @@ jobs:
           export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
           kubectl get pods -n database
         "
-            docker exec $(docker ps -qf 'name=postgres') pg_isready -U postgres
-          "

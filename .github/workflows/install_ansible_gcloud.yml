@@ -61,9 +61,6 @@ jobs:
           sudo mv ansible.cfg /etc/ansible/ansible.cfg
           cat /etc/ansible/ansible.cfg
 
-      - name: Copy inventory to k3s-master
-        run: |
-         gcloud compute scp /etc/ansible/inventory.ini k3s-master:/etc/ansible/inventory.ini --zone europe-west1-b
           
       - name: Verify Ansible installation on k3s-master
         run: |

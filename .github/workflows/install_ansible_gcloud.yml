@@ -78,7 +78,7 @@ jobs:
       - name: Copy SSH public key to all nodes
         run: |
           PUB_KEY=$(gcloud compute ssh k3s-master --zone europe-west1-b --command "sudo cat /home/ansible/.ssh/id_rsa.pub")
-          for vm in k3s-node-0 k3s-node-1 k3s-node-2; do
+          for vm in k3s-master k3s-node-0 k3s-node-1 k3s-node-2; do
             gcloud compute ssh $vm --zone europe-west1-b --command "
               sudo mkdir -p /home/ansible/.ssh
               echo '$PUB_KEY' | sudo tee -a /home/ansible/.ssh/authorized_keys

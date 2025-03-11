@@ -1,0 +1,41 @@
+scope: postgresql-ha
+namespace: default
+name: {{ inventory_hostname }}
+
+kubernetes:
+  use_configmaps: true
+  namespace: default
+  labels:
+    application: patroni
+
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    postgresql:
+      use_pg_rewind: true
+      use_slots: true
+  initdb:
+    - encoding: UTF8
+    - data-checksums
+  users:
+    admin:
+      password: admin
+      options:
+        - createrole
+        - createdb
+
+postgresql:
+  listen: 0.0.0.0:5432
+  connect_address: {{ ansible_host }}:5432
+  data_dir: /var/lib/postgresql/data
+  authentication:
+    replication:
+      username: replicator
+      password: rep_password
+    superuser:
+      username: postgres
+      password: postgres_password
+  parameters:
+    hot_standby: "on"

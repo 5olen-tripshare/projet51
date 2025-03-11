@@ -1,0 +1,27 @@
+- name: Installer les dépendances PostgreSQL et Patroni
+  package:
+    name:
+      - postgresql
+      - python3
+      - python3-pip
+    state: present
+
+- name: Installer Patroni et psycopg2
+  pip:
+    name:
+      - patroni[kubernetes]
+      - psycopg2-binary
+
+- name: Copier la configuration Patroni
+  template:
+    src: patroni.yml.j2
+    dest: /etc/patroni.yml
+    owner: ansible
+    group: ansible
+    mode: '0644'
+
+- name: Activer et démarrer Patroni
+  systemd:
+    name: patroni
+    state: started
+    enabled: yes

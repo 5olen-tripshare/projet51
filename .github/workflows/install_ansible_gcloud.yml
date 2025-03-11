@@ -51,7 +51,6 @@ jobs:
           echo "k3s-master ansible_host=10.0.0.3" >> inventory.ini
           echo "k3s-node-0 ansible_host=10.0.0.2" >> inventory.ini
           echo "k3s-node-1 ansible_host=10.0.0.5" >> inventory.ini
-          echo "k3s-node-2 ansible_host=10.0.0.6" >> inventory.ini
           cat inventory.ini
 
       - name: Copy inventory to k3s-master
@@ -79,3 +78,38 @@ jobs:
       - name: Deploy Backend Application
         run: |
           echo "Deploying Backend..."
+
+      - name: Install PostgreSQL Cluster Components
+        run: |
+          for vm in k3s-master k3s-node-0 k3s-node-1; do
+            gcloud compute ssh $vm --zone europe-west1-b --command "sudo dnf install -y postgresql-server postgresql-contrib etcd haproxy python3-pip && pip3 install patroni" --quiet
+          done
+
+      - name: Configure PostgreSQL Master
+        run: |
+          gcloud compute ssh k3s-master --zone europe-west1-b --command "sudo postgresql-setup --initdb && sudo systemctl enable postgresql && sudo systemctl start postgresql"
+
+      - name: Configure PostgreSQL Replicas
+        run: |
+          for vm in k3s-node-0 k3s-node-1; do
+            gcloud compute ssh $vm --zone europe-west1-b --command "sudo systemctl stop postgresql && sudo rm -rf /var/lib/pgsql/data && sudo -u postgres pg_basebackup -h 10.0.0.3 -D /var/lib/pgsql/data -U replication -Fp -Xs -P -R && sudo systemctl start postgresql"
+          done
+
+      - name: Configure HAProxy for PostgreSQL
+        run: |
+          gcloud compute ssh k3s-master --zone europe-west1-b --command "echo 'HAProxy configuration goes here' > /etc/haproxy/haproxy.cfg && sudo systemctl restart haproxy"
+
+      - name: Start PostgreSQL Cluster
+        run: |
+          for vm in k3s-master k3s-node-0 k3s-node-1; do
+            gcloud compute ssh $vm --zone europe-west1-b --command "sudo systemctl restart postgresql"
+          done
+
+  deploy-pods:
+    runs-on: ubuntu-latest
+    needs: backend
+
+    steps:
+      - name: Deploy Kubernetes Pods
+        run: |
+          gcloud compute ssh k3s-master --zone europe-west1-b --command "kubectl apply -f /path/to/pods.yaml"

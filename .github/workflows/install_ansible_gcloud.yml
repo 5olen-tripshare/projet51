@@ -22,14 +22,11 @@ jobs:
       - name: Install Google Cloud CLI
         run: |
           sudo apt-get update && sudo apt-get install -y google-cloud-cli
-
       - name: SSH into VMs and Update System
         run: |
-          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
           for vm in k3s-master k3s-node-0 k3s-node-1 k3s-node-2; do
             gcloud compute ssh $vm --zone europe-west1-b --command "sudo dnf update -y" --quiet
           done
-
   installation-ansible:
     runs-on: ubuntu-latest
     needs: mise-a-jour-vm
@@ -42,20 +39,17 @@ jobs:
 
       - name: Install Ansible on all VMs
         run: |
-          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
           for vm in k3s-master k3s-node-0 k3s-node-1 k3s-node-2; do
             gcloud compute ssh $vm --zone europe-west1-b --command "sudo dnf install -y epel-release && sudo dnf config-manager --set-enabled crb && sudo dnf install -y ansible" --quiet
           done
-
       - name: Configure Ansible inventory
         run: |
           echo "[k3s_cluster]" > inventory.ini
           echo "k3s-master ansible_host=10.0.0.3" >> inventory.ini
           echo "k3s-node-0 ansible_host=10.0.0.2" >> inventory.ini
           echo "k3s-node-1 ansible_host=10.0.0.5" >> inventory.ini
-          sudo mkdir -p /etc/ansible
-          sudo mv inventory.ini /etc/ansible/inventory.ini
-          cat /etc/ansible/inventory.ini
+          echo "k3s-node-2 ansible_host=10.0.0.6" >> inventory.ini
+          cat inventory.ini
 
       - name: Configure Ansible to use the inventory automatically
         run: |
@@ -68,8 +62,24 @@ jobs:
         run: |
           gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
           gcloud compute scp /etc/ansible/inventory.ini k3s-master:/etc/ansible/inventory.ini --zone europe-west1-b
-
+          
       - name: Verify Ansible installation on k3s-master
         run: |
-          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
-          gcloud compute ssh k3s-master --zone europe-west1-b --command "ansible --version && cat /etc/ansible/ansible.cfg"
+          gcloud compute ssh k3s-master --zone europe-west1-b --command "ansible --version"
+          
+  frontend:
+    runs-on: ubuntu-latest
+    needs: installation-ansible
+
+    steps:
+      - name: Deploy Frontend Application
+        run: |
+          echo "Deploying Frontend..."
+  backend:
+    runs-on: ubuntu-latest
+    needs: installation-ansible
+
+    steps:
+      - name: Deploy Backend Application
+        run: |
+          echo "Deploying Backend..."

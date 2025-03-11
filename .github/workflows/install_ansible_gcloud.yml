@@ -63,8 +63,7 @@ jobs:
 
       - name: Copy inventory to k3s-master
         run: |
-          gcloud auth activate-service-account --key-file <(echo "$GCP_SERVICE_ACCOUNT_KEY")
-          gcloud compute scp /etc/ansible/inventory.ini k3s-master:/etc/ansible/inventory.ini --zone europe-west1-b
+         gcloud compute scp /etc/ansible/inventory.ini k3s-master:/etc/ansible/inventory.ini --zone europe-west1-b
           
       - name: Verify Ansible installation on k3s-master
         run: |

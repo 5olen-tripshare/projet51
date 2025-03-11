@@ -49,6 +49,7 @@ jobs:
         run: |
           echo "[k3s_cluster]" > inventory.ini
           echo "k3s-master ansible_host=10.0.0.3 ansible_user=ansible" >> inventory.ini
+          echo "[k3s_nodes]" > inventory.ini
           echo "k3s-node-0 ansible_host=10.0.0.2 ansible_user=ansible" >> inventory.ini
           echo "k3s-node-1 ansible_host=10.0.0.5 ansible_user=ansible" >> inventory.ini
           echo "k3s-node-2 ansible_host=10.0.0.6 ansible_user=ansible" >> inventory.ini
@@ -74,27 +75,29 @@ jobs:
           echo "Deploying Backend..."
 
   deploy-postgres:
-    runs-on: ubuntu-latest
-    needs: backend
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Authenticate to GCP
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-
-      - name: Configure SSH access
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 10.0.0.3 10.0.0.2 10.0.0.5 10.0.0.6 >> ~/.ssh/known_hosts
-
-      - name: Run Ansible Playbook for PostgreSQL HA
-        run: |
-          gcloud compute ssh k3s-master --zone europe-west1-b --command "
-            ansible-playbook -i /etc/ansible/inventory.ini ansible/playbook-postgres.yml
-          "
+      runs-on: ubuntu-latest
+      needs: backend
+  
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+  
+        - name: Authenticate to GCP
+          uses: google-github-actions/auth@v1
+          with:
+            credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+  
+  
+        - name: Vérifier la connexion SSH entre k3s-master et les nœuds
+          run: |
+            gcloud compute ssh k3s-master --zone europe-west1-b --command "
+              sudo -u ansible ssh -o StrictHostKeyChecking=no ansible@10.0.0.2 'echo SSH vers k3s-node-0 OK'
+              sudo -u ansible ssh -o StrictHostKeyChecking=no ansible@10.0.0.5 'echo SSH vers k3s-node-1 OK'
+              sudo -u ansible ssh -o StrictHostKeyChecking=no ansible@10.0.0.6 'echo SSH vers k3s-node-2 OK'
+            "
+  
+        - name: Lancer le playbook Ansible pour PostgreSQL HA
+          run: |
+            gcloud compute ssh k3s-master --zone europe-west1-b --command "
+              sudo -u ansible ansible-playbook -i /etc/ansible/inventory.ini /home/ansible/playbook-postgres.yml
+            "

@@ -128,6 +128,11 @@ jobs:
   backend:
     runs-on: ubuntu-latest
     needs: installation-ansible
+
+    steps:
+      - name: Deploy Backend Application
+        run: |
+          echo "Deploying Backend..."
     
   deploy-postgres-k3s:
     runs-on: ubuntu-latest

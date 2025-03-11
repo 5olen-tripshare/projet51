@@ -53,19 +53,19 @@ jobs:
                 sudo useradd -m -s /bin/bash ansible
                 echo 'ansible ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/ansible
                 sudo mkdir -p /home/ansible/.ssh
-                sudo cp -r ~/.ssh/authorized_keys /home/ansible/.ssh/
+
+                # Vérifie si ~/.ssh/authorized_keys existe, sinon crée un fichier vide
+                if [ -f ~/.ssh/authorized_keys ]; then
+                  sudo cp ~/.ssh/authorized_keys /home/ansible/.ssh/
+                else
+                  sudo touch /home/ansible/.ssh/authorized_keys
+                fi
+
                 sudo chown -R ansible:ansible /home/ansible/.ssh
                 sudo chmod 700 /home/ansible/.ssh
                 sudo chmod 600 /home/ansible/.ssh/authorized_keys
               fi
             " --quiet
-          done
-
-      - name: Configure Ansible SSH Access
-        run: |
-          for vm in k3s-master k3s-node-0 k3s-node-1 k3s-node-2; do
-            gcloud compute ssh $vm --zone europe-west1-b --command "sudo mkdir -p /home/ansible/.ssh && sudo chmod 700 /home/ansible/.ssh && sudo chown ansible:ansible /home/ansible/.ssh"
-            gcloud compute ssh $vm --zone europe-west1-b --command "sudo cp /root/.ssh/authorized_keys /home/ansible/.ssh/ && sudo chown ansible:ansible /home/ansible/.ssh/authorized_keys && sudo chmod 600 /home/ansible/.ssh/authorized_keys"
           done
 
       - name: Configure Ansible inventory

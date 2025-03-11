@@ -71,11 +71,12 @@ jobs:
           
    
      
-      - name: Generate SSH key for Ansible user on k3s-master (if not exists)
+      - name: Generate SSH key for Ansible user on k3s-master (if not exists or empty)
         run: |
           gcloud compute ssh k3s-master --zone europe-west1-b --command "
-            if [ ! -f /home/ansible/.ssh/id_rsa ]; then
-              sudo -u ansible ssh-keygen -t rsa -b 4096 -N '' -f /home/ansible/.ssh/id_rsa
+            if [ ! -s /home/ansible/.ssh/id_rsa ]; then
+              sudo rm -f /home/ansible/.ssh/id_rsa /home/ansible/.ssh/id_rsa.pub
+              sudo -u ansible ssh-keygen -t rsa -b 4096 -N '' -f /home/ansible/.ssh/id_rsa <<< y
             fi
           "
 

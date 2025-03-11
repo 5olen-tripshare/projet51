@@ -128,53 +128,43 @@ jobs:
   backend:
     runs-on: ubuntu-latest
     needs: installation-ansible
-
-    steps:
-      - name: Deploy Backend Application
-        run: |
-          echo "Deploying Backend..."
-
-  deploy-postgres-docker:
+    
+  deploy-postgres-k3s:
     runs-on: ubuntu-latest
     needs: backend  # Lancer après backend
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Authenticate to GCP
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+    - name: Authenticate to GCP
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
-      - name: Install Docker on k3s-master
-        run: |
-          gcloud compute ssh k3s-master --zone europe-west1-b --command "
-            sudo apt-get update
-            sudo apt-get install -y docker.io
-            sudo systemctl enable --now docker
-            sudo usermod -aG docker ansible
-          "
+    - name: Copy Kubernetes manifests to k3s-master
+      run: |
+        gcloud compute scp -r k3s/postgresql-ha.yaml k3s-master:~/ --zone europe-west1-b
 
-      - name: Copy Docker files to k3s-master
-        run: |
-          gcloud compute scp -r ansible/docker-postgres k3s-master:~/ --zone europe-west1-b
+    - name: Deploy PostgreSQL HA on K3s
+      run: |
+        gcloud compute ssh k3s-master --zone europe-west1-b --command "
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          kubectl apply -f ~/postgresql-ha.yaml
+        "
 
-      - name: Deploy PostgreSQL cluster with Docker
-        run: |
-          gcloud compute ssh k3s-master --zone europe-west1-b --command "
-            cd ~/docker-postgres
-            docker-compose up -d
-          "
+    - name: Wait for PostgreSQL Pods to be Ready
+      run: |
+        gcloud compute ssh k3s-master --zone europe-west1-b --command "
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          kubectl wait --for=condition=ready pod -l app=postgres -n database --timeout=120s
+        "
 
-      - name: Verify PostgreSQL Cluster
-        run: |
-          gcloud compute ssh k3s-master --zone europe-west1-b --command "
-            docker ps | grep postgres
-          "
-
-      - name: Test PostgreSQL Connection
-        run: |
-          gcloud compute ssh k3s-master --zone europe-west1-b --command "
+    - name: Verify PostgreSQL Deployment
+      run: |
+        gcloud compute ssh k3s-master --zone europe-west1-b --command "
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          kubectl get pods -n database
+        "
             docker exec $(docker ps -qf 'name=postgres') pg_isready -U postgres
           "

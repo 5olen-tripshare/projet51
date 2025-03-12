@@ -91,7 +91,7 @@ jobs:
         run: |
           gcloud compute ssh k3s-master --zone europe-west1-b --command "
             sudo mkdir -p /home/ansible/.ssh
-            echo '${{ secrets.SSH_PRIVATE_KEY }}' | sudo tee /home/ansible/.ssh/id_rsa
+            echo '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}' | sudo tee /home/ansible/.ssh/id_rsa
             sudo chmod 600 /home/ansible/.ssh/id_rsa
             sudo chown -R ansible:ansible /home/ansible/.ssh
           "

@@ -125,7 +125,9 @@ export function AddEdit(props: {
   const [localisation, setLocalisation] = useState(accommodation?.localisation);
   const [price, setPrice] = useState(accommodation?.price);
   const [metre2, setMetre2] = useState(accommodation?.squareMeter);
-  const [isAvailable, setIsAvailable] = useState(accommodation?.isAvailable);
+  const [isAvailable, setIsAvailable] = useState(
+    accommodation?.isAvailable || false
+  );
   const [description, setDescription] = useState(accommodation?.description);
   const [numberRoom, setNumberRoom] = useState(accommodation?.numberRoom);
   const [bedRoom, setBedRoom] = useState(accommodation?.bedRoom);

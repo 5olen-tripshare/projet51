@@ -87,21 +87,17 @@ jobs:
           with:
             credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
-        - name: Copier le dossier Ansible sur k3s-master (via `/tmp/`)
+        - name: Copier les fichiers Ansible dans `~ansible/`
           run: |
-            gcloud compute scp --recurse ansible k3s-master:/tmp/ansible_tmp --zone europe-west1-b
+            gcloud compute scp --recurse ansible/* k3s-master:~ansible/ --zone europe-west1-b
             gcloud compute ssh k3s-master --zone europe-west1-b --command "
-              sudo mv /tmp/ansible_tmp /home/ansible/ansible
-              sudo chown -R ansible:ansible /home/ansible/ansible
+              sudo chown -R ansible:ansible ~ansible/
             "
   
-  
-        - name: Vérifier la connexion SSH entre k3s-master et les nœuds
+        - name: Vérifier la présence des fichiers Ansible sur `k3s-master`
           run: |
             gcloud compute ssh k3s-master --zone europe-west1-b --command "
-              sudo -u ansible ssh -o StrictHostKeyChecking=no ansible@10.0.0.2 'echo SSH vers k3s-node-0 OK'
-              sudo -u ansible ssh -o StrictHostKeyChecking=no ansible@10.0.0.5 'echo SSH vers k3s-node-1 OK'
-              sudo -u ansible ssh -o StrictHostKeyChecking=no ansible@10.0.0.6 'echo SSH vers k3s-node-2 OK'
+              ls -la ~ansible/
             "
   
         - name: Lancer le playbook Ansible pour PostgreSQL HA
@@ -109,3 +105,4 @@ jobs:
             gcloud compute ssh k3s-master --zone europe-west1-b --command "
               sudo -u ansible ansible-playbook -i ~ansible/inventory.yml ~ansible/playbook-postgres.yml
             "
+

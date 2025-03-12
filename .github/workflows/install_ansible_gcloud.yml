@@ -45,7 +45,7 @@ jobs:
             gcloud compute ssh $vm --zone europe-west1-b --command "sudo dnf install -y epel-release && sudo dnf config-manager --set-enabled crb && sudo dnf install -y ansible" --quiet
           done
 
-      - name: Configure Ansible inventory
+      - name: Configure Ansible inventory.ini
         run: |
           sudo mkdir -p /etc/ansible
           sudo mv inventory.ini /etc/ansible/inventory.ini

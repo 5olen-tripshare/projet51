@@ -91,7 +91,6 @@ jobs:
           run: |
             gcloud compute scp --recurse ansible k3s-master:/tmp/ansible_tmp --zone europe-west1-b
             gcloud compute ssh k3s-master --zone europe-west1-b --command "
-              sudo rm -rf /home/ansible/ansible
               sudo mv /tmp/ansible_tmp /home/ansible/ansible
               sudo chown -R ansible:ansible /home/ansible/ansible
             "

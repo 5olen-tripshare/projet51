@@ -87,22 +87,23 @@ jobs:
           with:
             credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
-        - name: Copier les fichiers Ansible dans `~ansible/`
+        - name: Se connecter en SSH et cloner le repo dans `/home/ansible/ansible/`
           run: |
-            gcloud compute scp --recurse ansible/* k3s-master:~ansible/ --zone europe-west1-b
-            gcloud compute ssh k3s-master --zone europe-west1-b --command "
-              sudo chown -R ansible:ansible ~ansible/
-            "
+              ssh ansible@k3s-master "
+              sudo apt update -y
+              sudo apt install -y git
+              if [ ! -d /home/ansible/ansible ]; then
+                git clone https://github.com/ton-repo-github.git /home/ansible/ansible;
+              fi
+              cd /home/ansible/ansible && git pull
+              sudo chown -R ansible:ansible /home/ansible/ansible
+              "
   
-        - name: Vérifier la présence des fichiers Ansible sur `k3s-master`
+        - name: Vérifier la présence des fichiers sur `k3s-master`
           run: |
-            gcloud compute ssh k3s-master --zone europe-west1-b --command "
-              ls -la ~ansible/
-            "
+            ssh ansible@k3s-master "ls -la /home/ansible/ansible/"
   
         - name: Lancer le playbook Ansible pour PostgreSQL HA
           run: |
-            gcloud compute ssh k3s-master --zone europe-west1-b --command "
-              sudo -u ansible ansible-playbook -i ~ansible/inventory.yml ~ansible/playbook-postgres.yml
-            "
-
+            ssh ansible@k3s-master "
+              ansible-playbook -i /home/ansible/ansible/inventory.yml /home/ansible/ansible/playbook-postgres.yml

@@ -96,11 +96,6 @@ jobs:
               sudo chown -R ansible:ansible /home/ansible/ansible
             "
   
-        - name: Vérifier les fichiers Ansible sur k3s-master
-          run: |
-            gcloud compute ssh k3s-master --zone europe-west1-b --command "ls -la /home/ansible/ansible"
-
-  
   
         - name: Vérifier la connexion SSH entre k3s-master et les nœuds
           run: |

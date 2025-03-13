@@ -22,13 +22,11 @@ jobs:
       - name: Install Google Cloud CLI
         run: |
           sudo apt-get update && sudo apt-get install -y google-cloud-cli
-          
       - name: SSH into VMs and Update System
         run: |
           for vm in k3s-master k3s-node-0 k3s-node-1 k3s-node-2; do
             gcloud compute ssh $vm --zone europe-west1-b --command "sudo dnf update -y" --quiet
           done
-
   installation-ansible:
     runs-on: ubuntu-latest
     needs: mise-a-jour-vm
@@ -44,12 +42,45 @@ jobs:
           for vm in k3s-master k3s-node-0 k3s-node-1 k3s-node-2; do
             gcloud compute ssh $vm --zone europe-west1-b --command "sudo dnf install -y epel-release && sudo dnf config-manager --set-enabled crb && sudo dnf install -y ansible" --quiet
           done
-
-      - name: Configure Ansible inventory.ini
+      - name: Create Ansible User on All VMs
         run: |
+          for vm in k3s-master k3s-node-0 k3s-node-1; do
+            gcloud compute ssh $vm --zone europe-west1-b --command "
+              if ! id 'ansible' &>/dev/null; then
+                sudo useradd -m -s /bin/bash ansible
+                echo 'ansible ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/ansible
+                sudo mkdir -p /home/ansible/.ssh
+                # Vérifie si ~/.ssh/authorized_keys existe, sinon crée un fichier vide
+                if [ -f ~/.ssh/authorized_keys ]; then
+                  sudo cp ~/.ssh/authorized_keys /home/ansible/.ssh/
+                else
+                  sudo touch /home/ansible/.ssh/authorized_keys
+                fi
+                sudo chown -R ansible:ansible /home/ansible/.ssh
+                sudo chmod 700 /home/ansible/.ssh
+                sudo chmod 600 /home/ansible/.ssh/authorized_keys
+              fi
+            " --quiet
+          done
+      - name: Configure Ansible inventory
+        run: |
+          echo "[k3s_cluster]" > inventory.ini
+          echo "k3s-master ansible_host=10.0.0.3 ansible_user=ansible" >> inventory.ini
+          echo "k3s-node-0 ansible_host=10.0.0.2 ansible_user=ansible" >> inventory.ini
+          echo "k3s-node-1 ansible_host=10.0.0.5 ansible_user=ansible" >> inventory.ini
+          echo "k3s-node-2 ansible_host=10.0.0.6 ansible_user=ansible" >> inventory.ini
           sudo mkdir -p /etc/ansible
           sudo mv inventory.ini /etc/ansible/inventory.ini
-
+          cat /etc/ansible/inventory.ini
+      - name: Configure Ansible to use the inventory automatically
+        run: |
+          echo "[defaults]" > ansible.cfg
+          echo "inventory = /etc/ansible/inventory.ini" >> ansible.cfg
+          sudo mv ansible.cfg /etc/ansible/ansible.cfg
+          cat /etc/ansible/ansible.cfg
+      - name: Verify Ansible installation on k3s-master
+        run: |
+          gcloud compute ssh k3s-master --zone europe-west1-b --command "ansible --version"
   frontend:
     runs-on: ubuntu-latest
     needs: installation-ansible
@@ -58,7 +89,6 @@ jobs:
       - name: Deploy Frontend Application
         run: |
           echo "Deploying Frontend..."
-
   backend:
     runs-on: ubuntu-latest
     needs: installation-ansible
@@ -67,53 +97,3 @@ jobs:
       - name: Deploy Backend Application
         run: |
           echo "Deploying Backend..."
-
-  deploy-postgres:
-    runs-on: ubuntu-latest
-    needs: backend
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Authenticate to GCP
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-
-      - name: Copier la clé SSH privée sur `k3s-master`
-        run: |
-          gcloud compute ssh k3s-master --zone europe-west1-b --command "
-            sudo mkdir -p /home/ansible/.ssh
-            echo '${{ secrets.SSH_PRIVATE_KEY }}' | sudo tee /home/ansible/.ssh/id_rsa
-            sudo chmod 600 /home/ansible/.ssh/id_rsa
-            sudo chown -R ansible:ansible /home/ansible/.ssh
-          "
-
-      - name: Copier les fichiers Ansible vers `/home/ansible/ansible/`
-        run: |
-          gcloud compute ssh k3s-master --zone europe-west1-b --command "sudo mkdir -p /home/ansible/ansible"
-          gcloud compute scp --recurse ansible/* k3s-master:/home/ansible/ansible/ --zone europe-west1-b
-          gcloud compute ssh k3s-master --zone europe-west1-b --command "sudo chown -R ansible:ansible /home/ansible/ansible"
-
-      - name: Vérifier la présence des fichiers Ansible sur `k3s-master`
-        run: |
-          gcloud compute ssh k3s-master --zone europe-west1-b --command "ls -la /home/ansible/ansible/"
-
-      - name: Vérifier si `playbook-postgres.yml` est présent
-        run: |
-          gcloud compute ssh k3s-master --zone europe-west1-b --command "
-            if [ -f /home/ansible/ansible/playbook-postgres.yml ]; then
-              echo 'Playbook trouvé, prêt à exécuter Ansible';
-            else
-              echo 'ERREUR : playbook-postgres.yml introuvable !';
-              exit 1;
-            fi
-          "
-
-      - name: Lancer le playbook Ansible pour PostgreSQL HA
-        run: |
-          gcloud compute ssh k3s-master --zone europe-west1-b --command "
-            sudo -u ansible ansible-playbook -i /home/ansible/ansible/inventory.yml /home/ansible/ansible/playbook-postgres.yml
-          "
-

@@ -97,3 +97,75 @@ jobs:
       - name: Deploy Backend Application
         run: |
           echo "Deploying Backend..."
+
+  postgresql-patroni:
+    runs-on: ubuntu-latest
+    needs: backend
+    steps:
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - name: Deploy PostgreSQL HA with Patroni
+        run: |
+          gcloud compute ssh k3s-master --zone europe-west1-b --command "
+            set -e
+            echo '🔹 Mise en place de PostgreSQL HA avec Patroni'
+            
+            # Installation des dépendances
+            sudo dnf install -y postgresql15 postgresql15-server python3-pip
+            
+            # Installation de Patroni
+            sudo pip3 install patroni psycopg2
+            
+            # Configuration du fichier patroni.yml
+            cat <<EOF | sudo tee /etc/patroni.yml
+            scope: postgresql-ha
+            namespace: /postgresql-ha/
+            name: k3s-master
+
+            restapi:
+              listen: 0.0.0.0:8008
+              connect_address: 10.0.0.3:8008
+
+            raft:
+              self_addr: 10.0.0.3:2222
+              partner_addrs:
+                - 10.0.0.2:2222
+                - 10.0.0.5:2222
+
+            postgresql:
+              listen: 0.0.0.0:5432
+              connect_address: 10.0.0.9:5432
+              data_dir: /var/lib/postgresql/15/main
+              bin_dir: /usr/lib/postgresql/15/bin
+              authentication:
+                replication:
+                  username: replicator
+                  password: replication_password
+                superuser:
+                  username: postgres
+                  password: postgres_password
+                rewind:
+                  username: rewind_user
+                  password: rewind_password
+              parameters:
+                wal_level: replica
+                hot_standby: 'on'
+                max_wal_senders: 10
+                max_replication_slots: 10
+                synchronous_commit: 'on'
+            EOF
+            
+            # Création et permission des fichiers
+            sudo chown -R postgres:postgres /var/lib/postgresql
+            sudo chmod 600 /etc/patroni.yml
+
+            # Démarrage de Patroni
+            sudo -u postgres nohup /usr/local/bin/patroni /etc/patroni.yml > /var/log/patroni.log 2>&1 &
+            sleep 5
+
+            # Vérification du cluster
+            sudo -u postgres /usr/local/bin/patronictl list
+          "

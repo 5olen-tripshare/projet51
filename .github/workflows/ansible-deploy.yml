@@ -1,3 +1,33 @@
-- name: Test SSH connection to Rocky-2
-  run: |
-    ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "hostname && whoami && uptime"
+name: Import PostgreSQL image on K3s nodes
+
+on:
+  push:
+    paths:
+      - '**.yml'
+      - '**.tar'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Test SSH connection to Rocky-2
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "hostname && whoami && uptime"
+
+      - name: Run Ansible Playbook
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "\
+            cd /opt/ton-repo && \
+            git pull && \
+            ansible-playbook -i inventory.ini import_postgresql_image.yml"

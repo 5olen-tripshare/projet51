@@ -1,0 +1,25 @@
+---
+- name: Importer l'image PostgreSQL Repmgr dans K3s (containerd)
+  hosts: k3s_nodes
+  become: yes
+  vars:
+    image_path: /tmp/postgresql-repmgr.tar
+
+  tasks:
+    - name: Copier l'image .tar sur le nœud
+      copy:
+        src: ./postgresql-repmgr.tar
+        dest: "{{ image_path }}"
+
+    - name: Importer l'image dans containerd de K3s
+      command: >
+        /usr/local/bin/ctr --address /run/k3s/containerd/containerd.sock images import {{ image_path }}
+
+    - name: Vérifier que l'image a bien été importée
+      command: >
+        /usr/local/bin/ctr --address /run/k3s/containerd/containerd.sock images ls
+      register: image_list
+
+    - name: Afficher la liste des images disponibles
+      debug:
+        msg: "{{ image_list.stdout_lines }}"

@@ -1,0 +1,18 @@
+name: Test Self-Hosted Runner
+
+on:
+  push:
+    paths:
+      - '**.md'
+      - '**.yml'
+
+jobs:
+  test-runner:
+    runs-on: self-hosted
+    steps:
+      - name: Afficher l'environnement
+        run: |
+          echo "Ce workflow tourne sur le runner self-hosted nommé ndaki !"
+          hostname
+          whoami
+          uptime
